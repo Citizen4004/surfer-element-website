@@ -17,11 +17,28 @@ const faqs = [
   { q: 'Why book through Surfer Element instead of the house directly?', a: 'Three reasons: your price is locked in once you book, even if that house’s own direct price rises later; we’ll help you work out which house actually fits you, based on real guest reviews rather than marketing copy; and you get one booking flow and one deposit, in your own language, instead of visiting three separate sites.' },
   { q: 'Who is Surfer Element, and who pays you?', a: "We're a booking service paid by the three houses listed on this site, and we only represent these three." },
 ];
+
+// A real Q&A section, so it gets FAQPage schema (on-page-seo-specialist
+// checklist). The one "pending" answer (cancellation policy) is still a
+// genuine, honest answer — it says plainly that the terms aren't finalized
+// yet — so it's included rather than fabricated or omitted.
+const faqSchema = [
+  {
+    '@type': 'FAQPage',
+    '@id': 'https://surferelement.com/faq/#faqpage',
+    mainEntity: faqs.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  },
+];
 ---
 <Layout
   title="FAQ | Surfer Element"
   description="Deposits, cancellations, getting from Agadir airport to Tamraght, what's included, and more — answered plainly, for all three houses we work with."
   navLabel="FAQ"
+  pageSchema={faqSchema}
 >
   <section class="container section prose">
     <h1>Frequently asked questions</h1>

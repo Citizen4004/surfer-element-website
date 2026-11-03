@@ -1,12 +1,14 @@
 ---
 import { withBase } from "../lib/url";
 import type { House } from '../data/houses';
+import { bookingSearchUrl } from '../data/houses';
 interface Props {
   house: House;
   matchReason?: string;
 }
 const { house, matchReason } = Astro.props as Props;
 const houseUrl = withBase(`/houses/${house.slug}/`);
+const reviewsUrl = bookingSearchUrl(house.name);
 ---
 <article class="house-card" style={`--house-accent: var(${house.accentVar})`}>
   {matchReason && <p class="guest-theme" style={`border-color: var(${house.accentVar})`}><strong>Closest match to your answers.</strong> {matchReason}</p>}
@@ -23,7 +25,7 @@ const houseUrl = withBase(`/houses/${house.slug}/`);
     <span class="house-card__score-num">{house.score.toFixed(1)}</span>
     <span class="house-card__score-label">/ 10 &middot; {house.reviews} reviews on Booking.com</span>
   </div>
-  <p class="house-card__meta">Checked {house.checkedDate} &middot; <a href="#">See the reviews on Booking.com &#8599;</a></p>
+  <p class="house-card__meta">Checked {house.checkedDate} &middot; <a href={reviewsUrl} target="_blank" rel="noopener noreferrer nofollow">See the reviews on Booking.com &#8599;</a></p>
 
   <div class="subscores">
     {house.subscores.map((s) => (
@@ -37,7 +39,7 @@ const houseUrl = withBase(`/houses/${house.slug}/`);
 
   <div>
     <p class="guest-theme" style={`border-color: var(${house.accentVar})`}>{house.theme}</p>
-    <p class="guest-theme__meta">Summarised from Booking.com guest reviews, not quoted verbatim &middot; checked {house.checkedDate} &middot; <a href="#">Read them on Booking.com &#8599;</a></p>
+    <p class="guest-theme__meta">Summarised from Booking.com guest reviews, not quoted verbatim &middot; checked {house.checkedDate} &middot; <a href={reviewsUrl} target="_blank" rel="noopener noreferrer nofollow">Read them on Booking.com &#8599;</a></p>
   </div>
 
   <div class="fit-lists">

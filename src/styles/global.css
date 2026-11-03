@@ -59,6 +59,8 @@
 .lang-switch__menu.is-open { display: block; }
 .lang-switch__menu a { display: block; padding: var(--space-2) var(--space-3); color: var(--color-ink); text-decoration: none; border-radius: var(--radius-sm); font-size: var(--text-small); }
 .lang-switch__menu a:hover, .lang-switch__menu a[aria-current="true"] { background: var(--color-subtle); color: var(--color-primary); }
+.lang-switch__pending { display: block; padding: var(--space-2) var(--space-3); color: var(--color-muted); font-size: var(--text-small); cursor: default; }
+.lang-switch__pending small { font-size: var(--text-meta); }
 
 /* ---------- Footer ---------- */
 .site-footer { background: var(--color-surface); border-top: 1px solid var(--color-border); padding-block: var(--space-8); }

@@ -3,11 +3,25 @@ import { withBase } from "../lib/url";
 import Layout from '../layouts/Layout.astro';
 import HouseCard from '../components/HouseCard.astro';
 import { housesAlphabetical } from '../data/houses';
+
+// entity/entity-brief.md: the Service/broker/provider schema belongs on
+// "the house page, and the comparison page for all houses" — this is the
+// "for all houses" half. Same no-aggregateRating, no-address-until-confirmed
+// rules as houses/[slug].astro.
+const compareSchema = housesAlphabetical.map((h) => ({
+  '@type': 'Service',
+  '@id': `https://surferelement.com/#service-${h.slug}`,
+  name: `Surf week at ${h.name}`,
+  provider: { '@id': `https://surferelement.com/houses/${h.slug}/#camp` },
+  broker: { '@id': 'https://surferelement.com/#organization' },
+  areaServed: { '@type': 'Place', name: 'Tamraght, Morocco' },
+}));
 ---
 <Layout
   title="Compare the Three Tamraght Surf Houses | Surfer Element"
   description="Side-by-side: real Booking.com guest-review scores, what guests say, and who each Tamraght surf house fits — SurfsHUB, Cactus and Hakuna Matata."
   navLabel="Compare"
+  pageSchema={compareSchema}
 >
   <section class="container section">
     <h1>Compare the three houses</h1>

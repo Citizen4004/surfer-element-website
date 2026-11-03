@@ -114,6 +114,20 @@ export const houses: House[] = [
 
 export const housesAlphabetical = [...houses].sort((a, b) => a.name.localeCompare(b.name));
 
+// Each house's exact Booking.com listing URL hasn't been captured in the
+// pipeline yet (local-market-specialist/founder still need to confirm the
+// canonical permalink per house — see citations/tamraght-citations.md).
+// Until then, "See the reviews on Booking.com" links go to a real,
+// functioning Booking.com search for the house's name rather than a dead
+// href="#" anchor. Replace with the confirmed listing URL per house once
+// it's available.
+export function bookingSearchUrl(houseName: string): string {
+  // houseName already includes "Tamraght" for some houses (e.g. "SurfsHUB
+  // Tamraght") but not others, so append only "Morocco" rather than
+  // "Tamraght Morocco" to avoid a redundant, odd-looking query string.
+  return `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(`${houseName} Morocco`)}`;
+}
+
 export const pricing = [
   { nights: 3, beginner: 150, intermediate: 180 },
   { nights: 5, beginner: 250, intermediate: 300 },

@@ -7,8 +7,86 @@ interface Props {
   title: string;
   description: string;
   navLabel?: string;
+  /** JSON-LD graph node(s) specific to this page (Service/LodgingBusiness on
+   * house + compare pages, FAQPage on the FAQ page). Merged into the
+   * sitewide Organization/WebSite/WebPage graph below. Never add
+   * aggregateRating here — Booking.com scores stay visible text only, per
+   * entity-brief.md. */
+  pageSchema?: Record<string, unknown>[];
 }
-const { title, description, navLabel } = Astro.props as Props;
+const { title, description, navLabel, pageSchema } = Astro.props as Props;
+
+// Astro.url.pathname already includes `base` when one is configured, so
+// strip it back off here to get the "logical" app path — the lang-switch
+// links below rebuild the URL with withBase(), and prefixing twice would
+// break them under the subpath deployment.
+const rawPath = Astro.url.pathname;
+const logicalPath = stripBase(rawPath);
+
+// Sitewide entity schema (entity/entity-brief.md "Starting JSON-LD"). One
+// Organization @id and one WebSite @id for the whole site, referenced by
+// every page/locale rather than one node per locale. No address/geo/hours
+// yet (the agency's own real address isn't confirmed — see config.md), and
+// sameAs stays [] until a real, active profile exists. ContactPoint
+// availableLanguage is the real staff languages (EN/FR), not the site's six
+// locales — see entity-brief.md's fix for this exact mix-up.
+const canonicalUrl = new URL(rawPath, Astro.site).toString();
+// Only English pages are actually live right now (see Layout's language
+// switcher below and sitemap.xml.ts) — the WebSite's inLanguage reflects
+// reality today rather than the six-locale end state, so it grows as each
+// translation actually ships instead of claiming pages that don't exist yet.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'TravelAgency',
+      '@id': 'https://surferelement.com/#organization',
+      name: 'Surfer Element',
+      url: 'https://surferelement.com/',
+      logo: {
+        '@type': 'ImageObject',
+        '@id': 'https://surferelement.com/#logo',
+        url: new URL(withBase('/logo/mark.svg'), Astro.site).toString(),
+        width: '512',
+        height: '512',
+      },
+      description:
+        "Surfer Element is a surf-camp booking agency in Tamraght, Morocco. We work with a small number of named, independent surf houses and help you pick the one whose atmosphere suits you. The site is available in English, German, French, Spanish, Italian and Dutch; we speak with you directly in English or French. We don't own any of the houses.",
+      disambiguatingDescription: 'Surf-camp booking agency in Tamraght, Morocco.',
+      email: 'contact@surferelement.com',
+      contactPoint: {
+        '@type': 'ContactPoint',
+        contactType: 'customer service',
+        availableLanguage: ['en', 'fr'],
+        email: 'contact@surferelement.com',
+      },
+      areaServed: { '@type': 'Place', name: 'Tamraght, Morocco' },
+      sameAs: [],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': 'https://surferelement.com/#website',
+      url: 'https://surferelement.com/',
+      name: 'Surfer Element',
+      inLanguage: ['en'],
+      publisher: { '@id': 'https://surferelement.com/#organization' },
+    },
+    {
+      '@type': 'WebPage',
+      '@id': `${canonicalUrl}#webpage`,
+      url: canonicalUrl,
+      name: title,
+      description,
+      isPartOf: { '@id': 'https://surferelement.com/#website' },
+      inLanguage: 'en',
+      datePublished: '2026-11-03',
+      dateModified: '2026-11-03',
+    },
+    ...(pageSchema ?? []),
+  ],
+};
+
+const ogImage = new URL(withBase('/og/og-image.svg'), Astro.site).toString();
 
 const nav = [
   { href: '/compare/', label: 'Compare' },
@@ -18,21 +96,20 @@ const nav = [
   { href: '/about/', label: 'About' },
 ];
 
+// Only English is live (see sitemap.xml.ts / robots.txt.ts / this file's
+// WebSite.inLanguage). The other five are the planned end state (DESIGN.md
+// §5), shown as non-clickable "coming soon" entries below rather than as
+// <a href> links, so this switcher never points at a page that 404s — it
+// was doing exactly that on every page before this fix (/de/..., /fr/...,
+// etc. all returned 404 with no translated content behind them).
 const locales = [
-  { code: 'en', label: 'English' },
-  { code: 'de', label: 'Deutsch' },
-  { code: 'fr', label: 'Français' },
-  { code: 'es', label: 'Español' },
-  { code: 'it', label: 'Italiano' },
-  { code: 'nl', label: 'Nederlands' },
+  { code: 'en', label: 'English', live: true },
+  { code: 'de', label: 'Deutsch', live: false },
+  { code: 'fr', label: 'Français', live: false },
+  { code: 'es', label: 'Español', live: false },
+  { code: 'it', label: 'Italiano', live: false },
+  { code: 'nl', label: 'Nederlands', live: false },
 ];
-
-// Astro.url.pathname already includes `base` when one is configured, so
-// strip it back off here to get the "logical" app path — the lang-switch
-// links below rebuild the URL with withBase(), and prefixing twice would
-// break them under the subpath deployment.
-const rawPath = Astro.url.pathname;
-const logicalPath = stripBase(rawPath);
 ---
 <!doctype html>
 <html lang="en">
@@ -45,8 +122,20 @@ const logicalPath = stripBase(rawPath);
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:site_name" content="Surfer Element" />
-    <meta name="twitter:card" content="summary" />
-    <link rel="canonical" href={new URL(rawPath, Astro.site)} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Surfer Element — three surf houses in Tamraght, one way to book" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <link rel="canonical" href={canonicalUrl} />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
   <body>
     <header class="site-header" id="site-header">
@@ -69,7 +158,9 @@ const logicalPath = stripBase(rawPath);
             </button>
             <div class="lang-switch__menu" id="lang-switch-menu">
               {locales.map((l) => (
-                <a href={withBase(l.code === 'en' ? logicalPath : `/${l.code}${logicalPath}`)} aria-current={l.code === 'en' ? 'true' : undefined}>{l.label}</a>
+                l.live
+                  ? <a href={withBase(logicalPath)} aria-current="true">{l.label}</a>
+                  : <span class="lang-switch__pending" aria-disabled="true">{l.label} <small>(coming soon)</small></span>
               ))}
             </div>
           </div>
