@@ -1,0 +1,13 @@
+---
+// DESIGN.md §9 "Before photos exist": a --color-subtle block at the slot's
+// exact ratio, the house (or agency) name in Serif, and a plain
+// "coming soon" line. No stock, generated or blurred stand-ins. The slot
+// ratio comes from the parent frame (.house-card__photo, .house-hero,
+// .photo-gallery, .triptych), so this component is identical everywhere.
+interface Props { name: string; line?: string }
+const { name, line } = Astro.props as Props;
+---
+<div class="photo-placeholder" role="img" aria-label={`Photo placeholder: ${line ?? `photos from ${name} coming soon`}`}>
+  <span class="photo-placeholder__name" aria-hidden="true">{name}</span>
+  <span aria-hidden="true">{line ?? 'Photos coming soon'}</span>
+</div>

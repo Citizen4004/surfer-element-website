@@ -1,6 +1,7 @@
 ---
 import { withBase } from "../lib/url";
 import Layout from '../layouts/Layout.astro';
+import PhotoPlaceholder from '../components/PhotoPlaceholder.astro';
 ---
 <Layout
   title="About Surfer Element | Tamraght, Morocco"
@@ -59,7 +60,7 @@ import Layout from '../layouts/Layout.astro';
 
     <h2>Who we are</h2>
     <div class="photo-gallery" style="grid-template-columns: 1fr; max-width: 20rem;">
-      <div class="photo-placeholder" style="aspect-ratio: 4/5;">Team photo coming soon</div>
+      <div style="aspect-ratio: 4/5; border-radius: var(--radius-md); overflow: hidden;"><PhotoPlaceholder name="The Surfer Element team" line="Team photo coming soon" /></div>
     </div>
     <p class="pending">A short, honest line about who's behind Surfer Element is pending — nothing is invented here.</p>
 

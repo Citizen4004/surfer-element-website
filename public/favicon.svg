@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Favicon per DESIGN.md §10: tag silhouette + eyelet only (the "Se"
+       monogram is illegible below 24px). Light/dark variants per §10. -->
+  <style>
+    .tag { fill: #1D2A2F; } .eyelet { fill: #A84A24; }
+    @media (prefers-color-scheme: dark) { .tag { fill: #EFE9DF; } .eyelet { fill: #E08A62; } }
+  </style>
+  <path class="tag" d="M17 12 H58 A4 4 0 0 1 62 16 V48 A4 4 0 0 1 58 52 H17 L2 37 V27 Z"/>
+  <circle class="eyelet" cx="13" cy="32" r="5"/>
+</svg>

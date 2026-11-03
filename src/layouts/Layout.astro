@@ -1,4 +1,8 @@
 ---
+// Self-hosted fonts (DESIGN.md §4): Astro bundles these WOFF2 files into
+// the build, so no request ever goes to Google Fonts.
+import '@fontsource-variable/source-serif-4/opsz.css';
+import '@fontsource-variable/source-sans-3/wght.css';
 import '../styles/global.css';
 import DisclosureNote from '../components/DisclosureNote.astro';
 import { withBase, stripBase } from '../lib/url';
@@ -116,7 +120,7 @@ const locales = [
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href={withBase('/logo/mark.svg')} />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta property="og:title" content={title} />
@@ -141,7 +145,15 @@ const locales = [
     <header class="site-header" id="site-header">
       <div class="container site-header__bar">
         <a class="site-header__logo" href={withBase('/')}>
-          <img src={withBase('/logo/mark.svg')} alt="" width="28" height="28" />
+          {/* Inline copy of design/logo/surferelement-mark.svg (same paths),
+              coloured with tokens so the tag flips to the light version in
+              dark mode per DESIGN.md §10. Decorative: the wordmark is the
+              link text. */}
+          <svg viewBox="0 0 64 64" width="28" height="28" aria-hidden="true" focusable="false">
+            <path class="logo-tag" d="M20 14 H53 A4 4 0 0 1 57 18 V46 A4 4 0 0 1 53 50 H20 L7 37 V27 Z"/>
+            <circle class="logo-eyelet" cx="16" cy="32" r="3.4"/>
+            <text class="logo-monogram" x="38.5" y="40.5" text-anchor="middle" font-size="23" letter-spacing="-0.3">Se</text>
+          </svg>
           <span class="site-header__logo-word">Surfer Element</span>
         </a>
         <nav class="site-nav" aria-label="Main">
@@ -152,8 +164,8 @@ const locales = [
         <div class="site-header__actions">
           <a class="btn-quiet" href={withBase('/contact/')}>Ask us</a>
           <div class="lang-switch" id="lang-switch">
-            <button class="lang-switch__button" id="lang-switch-button" aria-haspopup="true" aria-expanded="false">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></svg>
+            <button type="button" class="lang-switch__button" id="lang-switch-button" aria-expanded="false" aria-controls="lang-switch-menu" aria-label="Language: English">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></svg>
               EN
             </button>
             <div class="lang-switch__menu" id="lang-switch-menu">
@@ -164,8 +176,8 @@ const locales = [
               ))}
             </div>
           </div>
-          <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="mobile-nav">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
           </button>
         </div>
       </div>
@@ -184,7 +196,7 @@ const locales = [
         <div style="margin-bottom: var(--space-6)"><DisclosureNote /></div>
         <div class="site-footer__grid">
           <div>
-            <h3>The houses</h3>
+            <h2 class="site-footer__heading">The houses</h2>
             <ul>
               <li><a href={withBase('/houses/surfshub-tamraght/')}>SurfsHUB Tamraght</a></li>
               <li><a href={withBase('/houses/cactus-surf-skate-house/')}>Cactus Surf &amp; Skate House</a></li>
@@ -192,7 +204,7 @@ const locales = [
             </ul>
           </div>
           <div>
-            <h3>Surfer Element</h3>
+            <h2 class="site-footer__heading">Surfer Element</h2>
             <ul>
               <li><a href={withBase('/compare/')}>Compare</a></li>
               <li><a href={withBase('/fit-check/')}>Fit check</a></li>
@@ -203,7 +215,7 @@ const locales = [
             </ul>
           </div>
           <div>
-            <h3>Contact</h3>
+            <h2 class="site-footer__heading">Contact</h2>
             <ul>
               <li><a href="mailto:contact@surferelement.com">contact@surferelement.com</a></li>
               <li>Based in Tamraght, Morocco</li>
@@ -236,7 +248,14 @@ const locales = [
         const open = langMenu?.classList.toggle('is-open');
         langButton.setAttribute('aria-expanded', String(!!open));
       });
-      document.addEventListener('click', () => langMenu?.classList.remove('is-open'));
+      const closeLang = () => {
+        langMenu?.classList.remove('is-open');
+        langButton?.setAttribute('aria-expanded', 'false');
+      };
+      document.addEventListener('click', closeLang);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && langMenu?.classList.contains('is-open')) { closeLang(); langButton?.focus(); }
+      });
     </script>
   </body>
 </html>

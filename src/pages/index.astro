@@ -2,6 +2,9 @@
 import { withBase } from "../lib/url";
 import Layout from '../layouts/Layout.astro';
 import { housesAlphabetical } from '../data/houses';
+import { truncateWords } from '../lib/format';
+import PhotoPlaceholder from '../components/PhotoPlaceholder.astro';
+import DisclosureNote from '../components/DisclosureNote.astro';
 ---
 <Layout
   title="Surfer Element — Three surf houses in Tamraght, one booking"
@@ -20,7 +23,7 @@ import { housesAlphabetical } from '../data/houses';
       </p>
       <div class="triptych" style="margin-block: var(--space-6)">
         {housesAlphabetical.map((h) => (
-          <div class="photo-placeholder">Photos from {h.name} coming soon</div>
+          <PhotoPlaceholder name={h.name} />
         ))}
       </div>
     </div>
@@ -60,15 +63,16 @@ import { housesAlphabetical } from '../data/houses';
     <div class="container">
       <h2>The three houses</h2>
       <p class="compare-note">Listed alphabetically.</p>
-      <div class="house-grid">
+      <div style="margin-bottom: var(--space-5)"><DisclosureNote /></div>
+      <div class="house-grid" style="--card-rows: 4">
         {housesAlphabetical.map((h) => (
           <article class="house-card">
-            <div class="house-card__photo"><div class="photo-placeholder">Photos from {h.name} coming soon</div></div>
+            <div class="house-card__photo"><PhotoPlaceholder name={h.name} /></div>
             <div class="house-card__name">
-              <span class="house-dot" style={`background: var(${h.accentVar})`}></span>
+              <span class="house-dot" style={`background: var(${h.accentVar})`} aria-hidden="true"></span>
               <h3>{h.name}</h3>
             </div>
-            <p>{h.theme.slice(0, 140)}&hellip;</p>
+            <p>{truncateWords(h.theme, 140)}</p>
             <a class="btn btn-secondary" href={withBase(`/houses/${h.slug}/`)}>See {h.name} &rarr;</a>
           </article>
         ))}

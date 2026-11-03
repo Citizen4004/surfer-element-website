@@ -2,7 +2,19 @@
 import { withBase } from "../lib/url";
 import Layout from '../layouts/Layout.astro';
 import HouseCard from '../components/HouseCard.astro';
-import { housesAlphabetical } from '../data/houses';
+import DisclosureNote from '../components/DisclosureNote.astro';
+import { housesAlphabetical, bookingSearchUrl } from '../data/houses';
+import { formatCheckedDate, formatScore } from '../lib/format';
+
+// Short column labels for the narrow "By question" table. Full names stay
+// in the caption cells' accessible text via <abbr title>.
+const shortName: Record<string, string> = {
+  'cactus-surf-skate-house': 'Cactus',
+  'hakuna-matata': 'Hakuna Matata',
+  'surfshub-tamraght': 'SurfsHUB',
+};
+const subscoreLabels = housesAlphabetical[0].subscores.map((s) => s.label);
+const checked = formatCheckedDate(housesAlphabetical[0].checkedDate);
 
 // entity/entity-brief.md: the Service/broker/provider schema belongs on
 // "the house page, and the comparison page for all houses" — this is the
@@ -23,7 +35,7 @@ const compareSchema = housesAlphabetical.map((h) => ({
   navLabel="Compare"
   pageSchema={compareSchema}
 >
-  <section class="container section">
+  <section class="container section compare" id="compare" data-view="house">
     <h1>Compare the three houses</h1>
     <p class="compare-note prose">
       Listed alphabetically. Order never changes based on scores, price or
@@ -38,13 +50,90 @@ const compareSchema = housesAlphabetical.map((h) => ({
       listing.
     </p>
 
+    <div style="margin-block: var(--space-5)"><DisclosureNote /></div>
+
+    <h2 class="visually-hidden">The three houses, side by side</h2>
+
     <div class="view-toggle" role="group" aria-label="Comparison view">
-      <button type="button" id="view-by-house" aria-pressed="true">By house</button>
-      <button type="button" id="view-by-question" aria-pressed="false">By question</button>
+      <button type="button" id="view-by-house" aria-pressed="true" aria-controls="house-grid">By house</button>
+      <button type="button" id="view-by-question" aria-pressed="false" aria-controls="by-question">By question</button>
     </div>
 
-    <div class="house-grid" id="house-grid">
+    <div class="house-grid" id="house-grid" style="--card-rows: 8">
       {housesAlphabetical.map((h) => <HouseCard house={h} />)}
+    </div>
+
+    <div class="by-question" id="by-question">
+      <table class="bq-table">
+        <caption>Scores, side by side</caption>
+        <thead>
+          <tr>
+            {housesAlphabetical.map((h) => (
+              <th scope="col" id={`bq-h-${h.slug}`}>
+                <span class="house-dot" style={`background: var(${h.accentVar})`} aria-hidden="true"></span><abbr title={h.name} style="text-decoration:none">{shortName[h.slug]}</abbr>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th colspan="3" id="bq-f-score">Booking.com review score</th></tr>
+          <tr>
+            {housesAlphabetical.map((h) => (
+              <td headers={`bq-f-score bq-h-${h.slug}`}><span class="bq-num">{formatScore(h.score)}</span><span class="bq-sub">/ 10 &middot; {h.reviews} reviews</span></td>
+            ))}
+          </tr>
+          {subscoreLabels.map((label, i) => (
+            <>
+              <tr><th colspan="3" id={`bq-f-${i}`}>{label}</th></tr>
+              <tr>
+                {housesAlphabetical.map((h) => (
+                  <td headers={`bq-f-${i} bq-h-${h.slug}`}><span class="bq-num">{formatScore(h.subscores[i].value)}</span></td>
+                ))}
+              </tr>
+            </>
+          ))}
+        </tbody>
+      </table>
+      <p class="house-card__meta" style="margin-bottom: var(--space-6)">Booking.com scores, checked {checked}. Each house's source listing is linked under its guest summary below.</p>
+
+      <section class="bq-question" aria-labelledby="bq-themes">
+        <h3 id="bq-themes">What guests keep mentioning</h3>
+        {housesAlphabetical.map((h) => (
+          <div class="bq-question__house" style={`--house-accent: var(${h.accentVar})`}>
+            <h4>{h.name}</h4>
+            <p>{h.theme}</p>
+            <p class="guest-theme__meta">Summarised from Booking.com guest reviews, not quoted verbatim &middot; checked {formatCheckedDate(h.checkedDate)} &middot; <a href={bookingSearchUrl(h.name)} target="_blank" rel="noopener noreferrer nofollow">Read them on Booking.com &#8599;<span class="visually-hidden"> (opens in a new tab)</span></a></p>
+          </div>
+        ))}
+      </section>
+
+      <section class="bq-question" aria-labelledby="bq-good">
+        <h3 id="bq-good">Good fit if</h3>
+        {housesAlphabetical.map((h) => (
+          <div class="bq-question__house" style={`--house-accent: var(${h.accentVar})`}>
+            <h4>{h.name}</h4>
+            <ul>{h.goodFitIf.map((item) => <li>{item}</li>)}</ul>
+          </div>
+        ))}
+      </section>
+
+      <section class="bq-question" aria-labelledby="bq-not">
+        <h3 id="bq-not">Not a fit if</h3>
+        {housesAlphabetical.map((h) => (
+          <div class="bq-question__house" style={`--house-accent: var(${h.accentVar})`}>
+            <h4>{h.name}</h4>
+            <ul>{h.notAFitIf.map((item) => <li>{item}</li>)}</ul>
+          </div>
+        ))}
+      </section>
+
+      <section class="bq-question" aria-labelledby="bq-price">
+        <h3 id="bq-price">Price</h3>
+        <p>Same price at all three houses. <a href={withBase("/price-lock/")}>How pricing and the deposit work &rarr;</a></p>
+        <p>
+          {housesAlphabetical.map((h, i) => <>{i > 0 && ' · '}<a href={withBase(`/houses/${h.slug}/`)}>See {h.name}</a></>)}
+        </p>
+      </section>
     </div>
 
     <p class="prose" style="margin-top: var(--space-8)">
@@ -57,25 +146,21 @@ const compareSchema = housesAlphabetical.map((h) => ({
   </section>
 
   <script>
-    // Mobile "By house / By question" toggle — DESIGN.md §7.1. Below 900px
-    // (see .view-toggle media query) this swaps the stacked house cards for
-    // a per-field comparison table so the comparison stays readable on a
-    // narrow screen without a carousel hiding two of the three houses.
-    const byHouseBtn = document.getElementById('view-by-house');
-    const byQuestionBtn = document.getElementById('view-by-question');
-    byHouseBtn?.addEventListener('click', () => {
-      byHouseBtn.setAttribute('aria-pressed', 'true');
-      byQuestionBtn?.setAttribute('aria-pressed', 'false');
-      document.getElementById('house-grid')?.classList.remove('view-by-question');
-    });
-    byQuestionBtn?.addEventListener('click', () => {
-      byQuestionBtn.setAttribute('aria-pressed', 'true');
-      byHouseBtn?.setAttribute('aria-pressed', 'false');
-      document.getElementById('house-grid')?.classList.add('view-by-question');
-      // Full per-field table view is a follow-up enhancement; for now this
-      // toggle keeps the same accessible card list, which already reads
-      // fine with a screen reader and on a narrow screen via the stacked
-      // cards. A true transposed table is tracked as a known follow-up.
-    });
+    // Mobile "By house / By question" toggle — DESIGN.md §7.1. Switches the
+    // section's data-view, which CSS uses to swap the stacked cards for the
+    // by-question view below 900px. At 900px and up the grid always shows
+    // (it already reads across), whatever the toggle state.
+    const compare = document.getElementById('compare');
+    const buttons = {
+      house: document.getElementById('view-by-house'),
+      question: document.getElementById('view-by-question'),
+    };
+    function setView(view) {
+      compare?.setAttribute('data-view', view);
+      buttons.house?.setAttribute('aria-pressed', String(view === 'house'));
+      buttons.question?.setAttribute('aria-pressed', String(view === 'question'));
+    }
+    buttons.house?.addEventListener('click', () => setView('house'));
+    buttons.question?.addEventListener('click', () => setView('question'));
   </script>
 </Layout>

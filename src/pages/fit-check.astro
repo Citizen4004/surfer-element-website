@@ -2,7 +2,8 @@
 import { withBase } from "../lib/url";
 import Layout from '../layouts/Layout.astro';
 import HouseCard from '../components/HouseCard.astro';
-import { houses } from '../data/houses';
+import DisclosureNote from '../components/DisclosureNote.astro';
+import { houses, housesAlphabetical } from '../data/houses';
 ---
 <Layout
   title="Which Surf House Fits You? Fit Check | Surfer Element"
@@ -26,7 +27,7 @@ import { houses } from '../data/houses';
           <span id="quiz-step-label">1 of 4</span>
           <span class="quiz-progress__bar"><span id="quiz-progress-fill" style="width:25%"></span></span>
         </div>
-        <h2 id="quiz-question" style="margin-top:0"></h2>
+        <h2 id="quiz-question" style="margin-top:0" tabindex="-1"></h2>
         <div class="quiz-options" id="quiz-options"></div>
         <div class="quiz-actions">
           <button type="button" class="btn-quiet" id="quiz-back">&larr; Back</button>
@@ -35,7 +36,21 @@ import { houses } from '../data/houses';
       </div>
     </template>
 
-    <div id="quiz-results" hidden></div>
+    <div id="quiz-results" hidden>
+      <h2 id="quiz-results-heading" tabindex="-1">Your closest match</h2>
+      <p class="compare-note prose">The closest match to your answers is first. The other two houses stay below it, in alphabetical order, at full size.</p>
+      <div style="margin-bottom: var(--space-5)"><DisclosureNote /></div>
+      <div class="house-grid" id="quiz-result-grid" style="--card-rows: 9"></div>
+      <p style="margin-top: var(--space-6)"><button type="button" class="btn-quiet" id="quiz-restart">Start over</button></p>
+    </div>
+
+    <!-- The same full HouseCard used on /compare/, rendered at build time so
+         results show every house at full size with identical anatomy
+         (DESIGN.md §2 rule 3, §7.4). The script below only reorders them and
+         fills the top card's "Closest match" row. -->
+    <template id="tpl-result-cards">
+      {housesAlphabetical.map((h) => <HouseCard house={h} matchSlot />)}
+    </template>
 
     <p class="prose" style="margin-top: var(--space-8)">
       Prefer to skip straight to the full comparison?
@@ -95,7 +110,7 @@ import { houses } from '../data/houses';
   const scores = { 'surfshub-tamraght': 0, 'cactus-surf-skate-house': 0, 'hakuna-matata': 0 };
   let kidsRequired = false;
 
-  function render() {
+  function render(moveFocus = false) {
     root.innerHTML = '';
     const node = tpl.content.cloneNode(true);
     const q = questions[step];
@@ -107,7 +122,6 @@ import { houses } from '../data/houses';
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'quiz-option';
-      btn.setAttribute('role', 'radio');
       btn.setAttribute('aria-pressed', answers[step] === i ? 'true' : 'false');
       btn.innerHTML = `<span class="quiz-option__check"></span><span>${opt.label}</span>`;
       btn.addEventListener('click', () => {
@@ -116,7 +130,7 @@ import { houses } from '../data/houses';
         if (step >= questions.length) {
           finish();
         } else {
-          render();
+          render(true);
         }
       });
       optionsEl.appendChild(btn);
@@ -124,9 +138,11 @@ import { houses } from '../data/houses';
     const backBtn = node.getElementById('quiz-back');
     backBtn.disabled = step === 0;
     backBtn.addEventListener('click', () => {
-      if (step > 0) { step -= 1; render(); }
+      if (step > 0) { step -= 1; render(true); }
     });
     root.appendChild(node);
+    // DESIGN.md §11: step changes move focus to the new question heading.
+    if (moveFocus) document.getElementById('quiz-question')?.focus();
   }
 
   function finish() {
@@ -155,36 +171,36 @@ import { houses } from '../data/houses';
       else reason = "You said you'd rather avoid a party atmosphere: SurfsHUB doesn't host parties, by house policy.";
     }
 
-    const rest = houseData.filter((h) => h.slug !== top.slug);
+    const restSlugs = houseData
+      .filter((h) => h.slug !== top.slug)
+      .map((h) => h.slug)
+      .sort((a, b) => houseData.find((h) => h.slug === a).name.localeCompare(houseData.find((h) => h.slug === b).name));
     root.hidden = true;
     root.innerHTML = '';
     resultsEl.hidden = false;
-    resultsEl.innerHTML = `
-      <h2>Your closest match</h2>
-      <div class="house-grid" id="quiz-result-grid"></div>
-      <p style="margin-top: var(--space-6)"><button type="button" class="btn-quiet" id="quiz-restart">Start over</button></p>
-    `;
-    document.getElementById('quiz-restart').addEventListener('click', () => {
-      step = 0; answers.length = 0; resultsEl.hidden = true; root.hidden = false; render();
-    });
-    // Render via the same HouseCard markup structure is done server-side
-    // normally; for the client-rendered result we keep it intentionally
-    // simple and link to the matched house's own profile and to the full
-    // comparison, rather than re-implementing the whole card client-side.
+
     const grid = document.getElementById('quiz-result-grid');
-    [top, ...rest].forEach((h, i) => {
-      const card = document.createElement('article');
-      card.className = 'house-card';
-      card.innerHTML = `
-        ${i === 0 ? `<p class="guest-theme" style="border-color: var(${h.accentVar})"><strong>Closest match to your answers.</strong> ${reason}</p>` : ''}
-        <div class="house-card__photo"><div class="photo-placeholder">Photos from ${h.name} coming soon</div></div>
-        <div class="house-card__name"><span class="house-dot" style="background: var(${h.accentVar})"></span><h3>${h.name}</h3></div>
-        <div class="house-card__score"><span class="house-card__score-num">${h.score.toFixed(1)}</span><span class="house-card__score-label">/ 10 &middot; ${h.reviews} reviews on Booking.com</span></div>
-        <a class="btn btn-secondary" href="${siteBase}houses/${h.slug}/">See ${h.name} &rarr;</a>
-      `;
+    grid.innerHTML = '';
+    const cards = document.getElementById('tpl-result-cards').content.cloneNode(true);
+    const bySlug = {};
+    cards.querySelectorAll('.house-card').forEach((c) => { bySlug[c.dataset.slug] = c; });
+    [top.slug, ...restSlugs].forEach((slug, i) => {
+      const card = bySlug[slug];
+      if (i === 0) {
+        const slot = card.querySelector('.house-card__match');
+        slot.className = 'house-card__match match-label';
+        const label = document.createElement('strong');
+        label.textContent = 'Closest match to your answers';
+        slot.append(label, document.createTextNode(reason));
+      }
       grid.appendChild(card);
     });
+    document.getElementById('quiz-results-heading').focus();
   }
+
+  document.getElementById('quiz-restart').addEventListener('click', () => {
+    step = 0; answers.length = 0; resultsEl.hidden = true; root.hidden = false; render(true);
+  });
 
   render();
 </script>

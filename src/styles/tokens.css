@@ -19,6 +19,7 @@
   --color-primary: #1F5566;
   --color-primary-hover: #17434F;
   --color-on-primary: #FFFFFF;
+  --logo-monogram: #FFFDF8;     /* DESIGN.md §10: surface-colour monogram on ink tag */
   --color-accent: #A84A24;      /* brand mark + editorial markers only; never near prices */
   --color-positive: #3D6B47;
   --color-warning: #8A5A00;
@@ -30,8 +31,8 @@
   --house-surfshub: #39708E;
 
   /* Typography */
-  --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
-  --font-sans: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-serif: "Source Serif 4 Variable", "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-sans: "Source Sans 3 Variable", "Source Sans 3", "Segoe UI", system-ui, sans-serif;
   --text-display: clamp(2.25rem, 1.65rem + 2.56vw, 3.25rem);
   --text-h1: clamp(2rem, 1.55rem + 1.92vw, 2.75rem);
   --text-h2: clamp(1.5rem, 1.2rem + 1.28vw, 2rem);
@@ -97,6 +98,7 @@
     --color-primary: #8EC3D3;
     --color-primary-hover: #B0D6E1;
     --color-on-primary: #141B1E;
+    --logo-monogram: #141B1E;
     --color-accent: #E08A62;
     --color-positive: #8DBF95;
     --color-warning: #E2B65C;
@@ -119,6 +121,7 @@
   --color-primary: #8EC3D3;
   --color-primary-hover: #B0D6E1;
   --color-on-primary: #141B1E;
+  --logo-monogram: #141B1E;
   --color-accent: #E08A62;
   --color-positive: #8DBF95;
   --color-warning: #E2B65C;

@@ -2,6 +2,9 @@
 import { withBase } from "../../lib/url";
 import Layout from '../../layouts/Layout.astro';
 import { houses, bookingSearchUrl } from '../../data/houses';
+import { formatCheckedDate, formatScore } from '../../lib/format';
+import PhotoPlaceholder from '../../components/PhotoPlaceholder.astro';
+import DisclosureNote from '../../components/DisclosureNote.astro';
 
 export function getStaticPaths() {
   return houses.map((house) => ({
@@ -13,6 +16,7 @@ export function getStaticPaths() {
 const { house } = Astro.props;
 const otherHouses = houses.filter((h) => h.slug !== house.slug);
 const reviewsUrl = bookingSearchUrl(house.name);
+const checked = formatCheckedDate(house.checkedDate);
 
 // entity/entity-brief.md "Fixes" + "Starting JSON-LD": the camp is the
 // Service's provider and Surfer Element is only the broker (never
@@ -52,37 +56,37 @@ const houseSchema = [
   <section class="container section" style={`--house-accent: var(${house.accentVar})`}>
     <p class="compare-note">One of the three houses we work with in Tamraght. <a href={withBase("/compare/")}>See how it compares to the other two &rarr;</a></p>
 
-    <div class="house-hero"><div class="photo-placeholder">Photos from {house.name} coming soon</div></div>
+    <div class="house-hero"><PhotoPlaceholder name={house.name} /></div>
 
     <h1>{house.name}</h1>
     <p class="prose">{house.theme}</p>
 
     <h2>At a glance</h2>
     <ul>
-      <li><strong>Booking.com score:</strong> {house.score.toFixed(1)} / 10 ({house.scoreLabel})</li>
-      <li><strong>Reviews:</strong> {house.reviews} reviews on Booking.com &middot; checked {house.checkedDate} &middot; <a href={reviewsUrl} target="_blank" rel="noopener noreferrer nofollow">See the reviews on Booking.com &#8599;</a></li>
-      {house.subscores.map((s) => <li><strong>{s.label}:</strong> {s.value.toFixed(1)} / 10</li>)}
+      <li><strong>Booking.com score:</strong> {formatScore(house.score)} / 10</li>
+      <li><strong>Reviews:</strong> {house.reviews} reviews on Booking.com &middot; checked {checked} &middot; <a href={reviewsUrl} target="_blank" rel="noopener noreferrer nofollow">See the reviews on Booking.com &#8599;<span class="visually-hidden"> (opens in a new tab)</span></a></li>
+      {house.subscores.map((s) => <li><strong>{s.label}:</strong> {formatScore(s.value)} / 10</li>)}
       <li><strong>Price:</strong> €150&ndash;€420 per person depending on length of stay and level (shared room; private room +€20/room/night), same as the other two houses we work with and locked in once you book. All meals, daily coaching, daily yoga and <strong>the airport transfer both ways</strong> are included — not a paid add-on. <a href={withBase("/price-lock/")}>See the full package and how the price lock works &rarr;</a></li>
     </ul>
 
     <h2>Photo gallery</h2>
     <div class="photo-gallery">
-      {Array.from({ length: 8 }).map(() => <div class="photo-placeholder">Photos from {house.name} coming soon</div>)}
+      {Array.from({ length: 8 }).map(() => <PhotoPlaceholder name={house.name} />)}
     </div>
 
     <h2>What guests say about {house.name}</h2>
     <p class="prose">We don't write our own description of the atmosphere here. This is a summary of what real guests wrote on Booking.com.</p>
     <p class="guest-theme" style={`border-color: var(${house.accentVar})`}>{house.theme}</p>
-    <p class="guest-theme__meta">Summarised from Booking.com guest reviews, not quoted verbatim &middot; checked {house.checkedDate} &middot; <a href={reviewsUrl} target="_blank" rel="noopener noreferrer nofollow">Read them on Booking.com &#8599;</a></p>
+    <p class="guest-theme__meta">Summarised from Booking.com guest reviews, not quoted verbatim &middot; checked {checked} &middot; <a href={reviewsUrl} target="_blank" rel="noopener noreferrer nofollow">Read them on Booking.com &#8599;<span class="visually-hidden"> (opens in a new tab)</span></a></p>
 
-    <div class="fit-lists" style="margin-block: var(--space-6)">
+    <div class="fit-lists fit-lists--wide" style="margin-block: var(--space-6)">
       <div class="fit-list">
-        <h4>Good fit if</h4>
-        <ul>{house.goodFitIf.map((i) => <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> {i}</li>)}</ul>
+        <h3>Good fit if</h3>
+        <ul>{house.goodFitIf.map((i) => <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> {i}</li>)}</ul>
       </div>
       <div class="fit-list">
-        <h4>Not a fit if</h4>
-        <ul>{house.notAFitIf.map((i) => <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg> {i}</li>)}</ul>
+        <h3>Not a fit if</h3>
+        <ul>{house.notAFitIf.map((i) => <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/></svg> {i}</li>)}</ul>
       </div>
     </div>
 
@@ -99,14 +103,17 @@ const houseSchema = [
     <p class="prose">Deposit: 15% paid on this site when you book. Balance: 85% paid directly to {house.name}, in cash, on arrival. <a href={withBase("/price-lock/")}>See the full price-lock explanation &rarr;</a></p>
     <p class="prose"><strong>Check-in:</strong> until midnight. <strong>Check-out:</strong> 12:00 PM.</p>
 
+    <div class="prose" style="margin-block: var(--space-5)"><DisclosureNote /></div>
     <a class="btn btn-primary" href={withBase("/contact/")}>Book {house.name}</a>
 
     <p style="margin-top: var(--space-8)">See the other houses: {otherHouses.map((h, i) => <>{i > 0 && ' · '}<a href={withBase(`/houses/${h.slug}/`)}>{h.name}</a></>)}</p>
   </section>
 
   <div class="sticky-booking-bar">
-    <strong>{house.name}</strong>
-    <span>From €150 / 3 nights &middot; 15% deposit</span>
-    <a class="btn btn-primary" href={withBase("/contact/")}>Book</a>
+    <div class="sticky-booking-bar__info">
+      <strong>{house.name}</strong>
+      <span>From €150 / 3 nights &middot; 15% deposit</span>
+    </div>
+    <a class="btn btn-primary" href={withBase("/contact/")} aria-label={`Book ${house.name}`}>Book</a>
   </div>
 </Layout>
