@@ -1,0 +1,64 @@
+---
+import type { House } from '../data/houses';
+interface Props {
+  house: House;
+  matchReason?: string;
+}
+const { house, matchReason } = Astro.props as Props;
+const houseUrl = `/houses/${house.slug}/`;
+---
+<article class="house-card" style={`--house-accent: var(${house.accentVar})`}>
+  {matchReason && <p class="guest-theme" style={`border-color: var(${house.accentVar})`}><strong>Closest match to your answers.</strong> {matchReason}</p>}
+  <div class="house-card__photo">
+    <div class="photo-placeholder">Photos from {house.name} coming soon</div>
+  </div>
+  <div class="house-card__name">
+    <span class="house-dot" style={`background: var(${house.accentVar})`}></span>
+    <h3>{house.name}</h3>
+  </div>
+  <p class="house-card__location">Tamraght, Morocco</p>
+
+  <div class="house-card__score">
+    <span class="house-card__score-num">{house.score.toFixed(1)}</span>
+    <span class="house-card__score-label">/ 10 &middot; {house.reviews} reviews on Booking.com</span>
+  </div>
+  <p class="house-card__meta">Checked {house.checkedDate} &middot; <a href="#">See the reviews on Booking.com &#8599;</a></p>
+
+  <div class="subscores">
+    {house.subscores.map((s) => (
+      <div class="subscore__row">
+        <span class="subscore__label">{s.label}</span>
+        <span class="subscore__num">{s.value.toFixed(1)}</span>
+        <span class="subscore__bar"><span style={`width:${(s.value/10)*100}%`}></span></span>
+      </div>
+    ))}
+  </div>
+
+  <div>
+    <p class="guest-theme" style={`border-color: var(${house.accentVar})`}>{house.theme}</p>
+    <p class="guest-theme__meta">Summarised from Booking.com guest reviews, not quoted verbatim &middot; checked {house.checkedDate} &middot; <a href="#">Read them on Booking.com &#8599;</a></p>
+  </div>
+
+  <div class="fit-lists">
+    <div class="fit-list">
+      <h4>Good fit if</h4>
+      <ul>
+        {house.goodFitIf.map((item) => (
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> {item}</li>
+        ))}
+      </ul>
+    </div>
+    <div class="fit-list">
+      <h4>Not a fit if</h4>
+      <ul>
+        {house.notAFitIf.map((item) => (
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg> {item}</li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <p class="house-card__price">Same price at all three houses. <a href="/price-lock/">How pricing and the deposit work &rarr;</a></p>
+
+  <a class="btn btn-secondary" href={houseUrl}>See {house.name} &rarr;</a>
+</article>

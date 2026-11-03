@@ -1,0 +1,80 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { houses } from '../../data/houses';
+
+export function getStaticPaths() {
+  return houses.map((house) => ({
+    params: { slug: house.slug },
+    props: { house },
+  }));
+}
+
+const { house } = Astro.props;
+const otherHouses = houses.filter((h) => h.slug !== house.slug);
+---
+<Layout
+  title={`${house.name} Reviews & Booking | Surfer Element`}
+  description={`${house.name}: real Booking.com guest reviews and honest fit, one of the three houses we work with in Tamraght.`}
+  navLabel={house.name}
+>
+  <section class="container section" style={`--house-accent: var(${house.accentVar})`}>
+    <p class="compare-note">One of the three houses we work with in Tamraght. <a href="/compare/">See how it compares to the other two &rarr;</a></p>
+
+    <div class="house-hero"><div class="photo-placeholder">Photos from {house.name} coming soon</div></div>
+
+    <h1>{house.name}</h1>
+    <p class="prose">{house.theme}</p>
+
+    <h2>At a glance</h2>
+    <ul>
+      <li><strong>Booking.com score:</strong> {house.score.toFixed(1)} / 10 ({house.scoreLabel})</li>
+      <li><strong>Reviews:</strong> {house.reviews} reviews on Booking.com &middot; checked {house.checkedDate} &middot; <a href="#">See the reviews on Booking.com &#8599;</a></li>
+      {house.subscores.map((s) => <li><strong>{s.label}:</strong> {s.value.toFixed(1)} / 10</li>)}
+      <li><strong>Price:</strong> €150&ndash;€420 per person depending on length of stay and level (shared room; private room +€20/room/night), same as the other two houses we work with and locked in once you book. All meals, daily coaching, daily yoga and <strong>the airport transfer both ways</strong> are included — not a paid add-on. <a href="/price-lock/">See the full package and how the price lock works &rarr;</a></li>
+    </ul>
+
+    <h2>Photo gallery</h2>
+    <div class="photo-gallery">
+      {Array.from({ length: 8 }).map(() => <div class="photo-placeholder">Photos from {house.name} coming soon</div>)}
+    </div>
+
+    <h2>What guests say about {house.name}</h2>
+    <p class="prose">We don't write our own description of the atmosphere here. This is a summary of what real guests wrote on Booking.com.</p>
+    <p class="guest-theme" style={`border-color: var(${house.accentVar})`}>{house.theme}</p>
+    <p class="guest-theme__meta">Summarised from Booking.com guest reviews, not quoted verbatim &middot; checked {house.checkedDate} &middot; <a href="#">Read them on Booking.com &#8599;</a></p>
+
+    <div class="fit-lists" style="margin-block: var(--space-6)">
+      <div class="fit-list">
+        <h4>Good fit if</h4>
+        <ul>{house.goodFitIf.map((i) => <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> {i}</li>)}</ul>
+      </div>
+      <div class="fit-list">
+        <h4>Not a fit if</h4>
+        <ul>{house.notAFitIf.map((i) => <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg> {i}</li>)}</ul>
+      </div>
+    </div>
+
+    <h2>The room</h2>
+    <p class="prose">{house.rooms}</p>
+
+    <h2>Staff and languages</h2>
+    <p class="prose">The agency's own team communicates in English or French. {house.staffLanguages}</p>
+
+    <h2>Location</h2>
+    <p class="prose">In Tamraght village. Agadir Al Massira Airport (AGA) is roughly 45 minutes to an hour by road.</p>
+
+    <h2>Booking</h2>
+    <p class="prose">Deposit: 15% paid on this site when you book. Balance: 85% paid directly to {house.name}, in cash, on arrival. <a href="/price-lock/">See the full price-lock explanation &rarr;</a></p>
+    <p class="prose"><strong>Check-in:</strong> until midnight. <strong>Check-out:</strong> 12:00 PM.</p>
+
+    <a class="btn btn-primary" href="/contact/">Book {house.name}</a>
+
+    <p style="margin-top: var(--space-8)">See the other houses: {otherHouses.map((h, i) => <>{i > 0 && ' · '}<a href={`/houses/${h.slug}/`}>{h.name}</a></>)}</p>
+  </section>
+
+  <div class="sticky-booking-bar">
+    <strong>{house.name}</strong>
+    <span>From €150 / 3 nights &middot; 15% deposit</span>
+    <a class="btn btn-primary" href="/contact/">Book</a>
+  </div>
+</Layout>

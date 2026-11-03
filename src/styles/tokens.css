@@ -1,0 +1,154 @@
+/* Surfer Element design tokens — v1.1, 2026-11-03 (renamed from Surfkompass; values unchanged)
+   Source of truth: pipeline/tamraght-surf-agency/design/DESIGN.md
+   Pages reference these names; never raw values. */
+
+:root {
+  color-scheme: light dark;
+
+  /* Neutrals */
+  --color-bg: #F6F2EA;
+  --color-surface: #FFFDF8;
+  --color-subtle: #EEE7DB;
+  --color-border: #DCD2C1;
+  --color-border-strong: #8C8170;
+  --color-ink: #1D2A2F;
+  --color-ink-2: #4A5357;
+  --color-muted: #655D52;
+
+  /* Brand + semantic */
+  --color-primary: #1F5566;
+  --color-primary-hover: #17434F;
+  --color-on-primary: #FFFFFF;
+  --color-accent: #A84A24;      /* brand mark + editorial markers only; never near prices */
+  --color-positive: #3D6B47;
+  --color-warning: #8A5A00;
+  --color-error: #A3312A;
+
+  /* House accents — wayfinding only; equal OKLCH L 0.52 / C 0.075 */
+  --house-cactus: #487552;
+  --house-hkm: #876038;
+  --house-surfshub: #39708E;
+
+  /* Typography */
+  --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-sans: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --text-display: clamp(2.25rem, 1.65rem + 2.56vw, 3.25rem);
+  --text-h1: clamp(2rem, 1.55rem + 1.92vw, 2.75rem);
+  --text-h2: clamp(1.5rem, 1.2rem + 1.28vw, 2rem);
+  --text-h3: 1.375rem;
+  --text-lead: 1.25rem;
+  --text-body: 1.0625rem;
+  --text-small: 0.9375rem;
+  --text-meta: 0.8125rem;
+  --text-score: 2.25rem;
+  --leading-tight: 1.1;
+  --leading-heading: 1.2;
+  --leading-body: 1.6;
+  --weight-regular: 400;
+  --weight-semibold: 600;
+  --measure: 40rem;
+
+  /* Spacing (4-based) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+  --space-section: var(--space-9);
+  --container: 72rem;
+  --gutter: 24px;
+
+  /* Shape + depth */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+  --shadow-raised: 0 1px 2px rgba(29, 42, 47, 0.06), 0 6px 20px rgba(29, 42, 47, 0.08);
+  --focus-ring: 3px solid var(--color-primary);
+  --focus-offset: 2px;
+
+  /* Motion */
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+}
+
+@media (max-width: 767px) {
+  :root { --space-section: var(--space-8); }
+}
+@media (max-width: 479px) {
+  :root { --gutter: 16px; }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: #141B1E;
+    --color-surface: #1B2427;
+    --color-subtle: #232E32;
+    --color-border: #34413F;
+    --color-border-strong: #6E7D78;
+    --color-ink: #EFE9DF;
+    --color-ink-2: #C9C2B6;
+    --color-muted: #A39B8E;
+    --color-primary: #8EC3D3;
+    --color-primary-hover: #B0D6E1;
+    --color-on-primary: #141B1E;
+    --color-accent: #E08A62;
+    --color-positive: #8DBF95;
+    --color-warning: #E2B65C;
+    --color-error: #F08A80;
+    --house-cactus: #89B992;
+    --house-hkm: #CCA178;
+    --house-surfshub: #7BB3D4;
+    --shadow-raised: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.35);
+  }
+}
+:root[data-theme="dark"] {
+  --color-bg: #141B1E;
+  --color-surface: #1B2427;
+  --color-subtle: #232E32;
+  --color-border: #34413F;
+  --color-border-strong: #6E7D78;
+  --color-ink: #EFE9DF;
+  --color-ink-2: #C9C2B6;
+  --color-muted: #A39B8E;
+  --color-primary: #8EC3D3;
+  --color-primary-hover: #B0D6E1;
+  --color-on-primary: #141B1E;
+  --color-accent: #E08A62;
+  --color-positive: #8DBF95;
+  --color-warning: #E2B65C;
+  --color-error: #F08A80;
+  --house-cactus: #89B992;
+  --house-hkm: #CCA178;
+  --house-surfshub: #7BB3D4;
+  --shadow-raised: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* Base rules that encode DESIGN.md decisions */
+html { background: var(--color-bg); color: var(--color-ink); }
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+h1, h2, h3 {
+  font-family: var(--font-serif);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-heading);
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+.num, .score, .price, td { font-variant-numeric: tabular-nums; }
+a { color: var(--color-primary); text-decoration: underline; text-underline-offset: 3px; }
+:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}

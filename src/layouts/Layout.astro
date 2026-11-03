@@ -1,0 +1,145 @@
+---
+import '../styles/global.css';
+import DisclosureNote from '../components/DisclosureNote.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  navLabel?: string;
+}
+const { title, description, navLabel } = Astro.props as Props;
+
+const nav = [
+  { href: '/compare/', label: 'Compare' },
+  { href: '/fit-check/', label: 'Fit check' },
+  { href: '/price-lock/', label: 'Price lock' },
+  { href: '/guide/', label: 'Tamraght guide' },
+  { href: '/about/', label: 'About' },
+];
+
+const locales = [
+  { code: 'en', label: 'English' },
+  { code: 'de', label: 'Deutsch' },
+  { code: 'fr', label: 'Français' },
+  { code: 'es', label: 'Español' },
+  { code: 'it', label: 'Italiano' },
+  { code: 'nl', label: 'Nederlands' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/logo/mark.svg" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content="Surfer Element" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="canonical" href={new URL(currentPath, Astro.site)} />
+  </head>
+  <body>
+    <header class="site-header" id="site-header">
+      <div class="container site-header__bar">
+        <a class="site-header__logo" href="/">
+          <img src="/logo/mark.svg" alt="" width="28" height="28" />
+          <span class="site-header__logo-word">Surfer Element</span>
+        </a>
+        <nav class="site-nav" aria-label="Main">
+          {nav.map((item) => (
+            <a href={item.href} aria-current={navLabel === item.label ? 'page' : undefined}>{item.label}</a>
+          ))}
+        </nav>
+        <div class="site-header__actions">
+          <a class="btn-quiet" href="/contact/">Ask us</a>
+          <div class="lang-switch" id="lang-switch">
+            <button class="lang-switch__button" id="lang-switch-button" aria-haspopup="true" aria-expanded="false">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></svg>
+              EN
+            </button>
+            <div class="lang-switch__menu" id="lang-switch-menu">
+              {locales.map((l) => (
+                <a href={l.code === 'en' ? currentPath : `/${l.code}${currentPath}`} aria-current={l.code === 'en' ? 'true' : undefined}>{l.label}</a>
+              ))}
+            </div>
+          </div>
+          <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="mobile-nav">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          </button>
+        </div>
+      </div>
+      <nav class="mobile-nav container" id="mobile-nav" aria-label="Main, mobile">
+        {nav.map((item) => (<a href={item.href}>{item.label}</a>))}
+        <a href="/contact/">Ask us</a>
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div style="margin-bottom: var(--space-6)"><DisclosureNote /></div>
+        <div class="site-footer__grid">
+          <div>
+            <h3>The houses</h3>
+            <ul>
+              <li><a href="/houses/surfshub-tamraght/">SurfsHUB Tamraght</a></li>
+              <li><a href="/houses/cactus-surf-skate-house/">Cactus Surf &amp; Skate House</a></li>
+              <li><a href="/houses/hakuna-matata/">Hakuna Matata Guest House</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Surfer Element</h3>
+            <ul>
+              <li><a href="/compare/">Compare</a></li>
+              <li><a href="/fit-check/">Fit check</a></li>
+              <li><a href="/price-lock/">Price lock</a></li>
+              <li><a href="/about/">About</a></li>
+              <li><a href="/faq/">FAQ</a></li>
+              <li><a href="/contact/">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Contact</h3>
+            <ul>
+              <li><a href="mailto:contact@surferelement.com">contact@surferelement.com</a></li>
+              <li>Based in Tamraght, Morocco</li>
+            </ul>
+          </div>
+        </div>
+        <div class="site-footer__meta">
+          <p>Booking.com scores checked on 3 Nov 2026. &copy; Surfer Element.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const header = document.getElementById('site-header');
+      window.addEventListener('scroll', () => {
+        header?.classList.toggle('is-scrolled', window.scrollY > 4);
+      }, { passive: true });
+
+      const navToggle = document.getElementById('nav-toggle');
+      const mobileNav = document.getElementById('mobile-nav');
+      navToggle?.addEventListener('click', () => {
+        const open = mobileNav?.classList.toggle('is-open');
+        navToggle.setAttribute('aria-expanded', String(!!open));
+      });
+
+      const langButton = document.getElementById('lang-switch-button');
+      const langMenu = document.getElementById('lang-switch-menu');
+      langButton?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = langMenu?.classList.toggle('is-open');
+        langButton.setAttribute('aria-expanded', String(!!open));
+      });
+      document.addEventListener('click', () => langMenu?.classList.remove('is-open'));
+    </script>
+  </body>
+</html>

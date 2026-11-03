@@ -1,0 +1,98 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { housesAlphabetical } from '../data/houses';
+---
+<Layout
+  title="Surfer Element — Three surf houses in Tamraght, one booking"
+  description="Compare three independent surf houses in Tamraght, Morocco by real guest reviews, book with a price that's locked in, and pay in your own language."
+  navLabel="Home"
+>
+  <section class="container hero">
+    <div>
+      <h1>Three surf houses in Tamraght. One way to book.</h1>
+      <p class="prose" style="font-size: var(--text-lead)">
+        Surfer Element is a booking service for three independent surf houses in
+        Tamraght, Morocco: SurfsHUB Tamraght, Cactus Surf &amp; Skate House and
+        Hakuna Matata Guest House. We help you find the one that fits you, and
+        book it in your own language, with a price that's locked in once you
+        see it.
+      </p>
+      <div class="triptych" style="margin-block: var(--space-6)">
+        {housesAlphabetical.map((h) => (
+          <div class="photo-placeholder">Photos from {h.name} coming soon</div>
+        ))}
+      </div>
+    </div>
+
+    <div class="quiz-panel">
+      <h2 style="margin-top:0">Where are you starting from?</h2>
+      <p>Start the fit check. Four short questions, no sign-up, and we'll show
+        you which house fits what you're looking for, with the reasons tied
+        to your answers.</p>
+      <a class="btn btn-primary" href="/fit-check/" style="width:100%">Start the fit check</a>
+      <p style="text-align:center; margin-bottom:0"><a class="btn-quiet" href="/compare/">Or see all three houses side by side</a></p>
+    </div>
+  </section>
+
+  <section class="section section--surface">
+    <div class="container prose">
+      <h2>How it works</h2>
+      <ol>
+        <li><strong>Tell us what you're looking for, or compare all three yourself.</strong>
+          The fit check takes about a minute. Prefer to look yourself? The
+          <a href="/compare/">comparison page</a> has everything side by side:
+          real guest-review scores, what guests keep mentioning, and who each
+          house does and doesn't suit.</li>
+        <li><strong>Book with a price that's locked in.</strong> Once you see
+          your price, it doesn't rise, even if the house's own direct price
+          does later. <a href="/price-lock/">How the price lock works &rarr;</a></li>
+        <li><strong>Pay a 15% deposit now, the rest at the house.</strong> You
+          pay the deposit on this site when you book; the balance is paid
+          directly to the house when you arrive, the same way it's always
+          been done in Tamraght. Meals, coaching, yoga and your airport
+          transfer both ways are already included in the price.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>The three houses</h2>
+      <p class="compare-note">Listed alphabetically.</p>
+      <div class="house-grid">
+        {housesAlphabetical.map((h) => (
+          <article class="house-card">
+            <div class="house-card__photo"><div class="photo-placeholder">Photos from {h.name} coming soon</div></div>
+            <div class="house-card__name">
+              <span class="house-dot" style={`background: var(${h.accentVar})`}></span>
+              <h3>{h.name}</h3>
+            </div>
+            <p>{h.theme.slice(0, 140)}&hellip;</p>
+            <a class="btn btn-secondary" href={`/houses/${h.slug}/`}>See {h.name} &rarr;</a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--surface">
+    <div class="container prose">
+      <h2>What guests actually say</h2>
+      <p>We don't write our own description of what each house is like. We
+        read what real guests wrote on Booking.com and summarize it honestly,
+        good and less-good. Every score and every theme on this site is dated
+        and links back to the source. <a href="/compare/">See the full comparison &rarr;</a></p>
+
+      <h2>A booking service, not a directory</h2>
+      <p>Surfer Element works with these three houses and represents only
+        them. We don't list every surf camp in Tamraght, and we're paid by
+        the houses you book through us. We'd rather say that plainly than
+        bury it in fine print. <a href="/about/">More about how this works &rarr;</a></p>
+
+      <h2>Questions before you book?</h2>
+      <p>The <a href="/faq/">FAQ</a> covers deposits, cancellations, getting
+        from Agadir airport to Tamraght, and what's included. Can't find it
+        there? <a href="/contact/">Get in touch &rarr;</a></p>
+    </div>
+  </section>
+</Layout>

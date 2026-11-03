@@ -1,0 +1,68 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout
+  title="Contact Us | Surfer Element"
+  description="Questions before you book a Tamraght surf house? Reach Surfer Element by email or the contact form — we're based in Tamraght, Morocco."
+  navLabel="Contact"
+>
+  <section class="container section prose">
+    <h1>Get in touch</h1>
+    <p>Questions about the three houses, which one fits you, or how booking
+      and the deposit work? Ask before you book, not after.</p>
+
+    <h2>Email</h2>
+    <p><a href="mailto:contact@surferelement.com"><strong>contact@surferelement.com</strong></a></p>
+    <p>We aim to reply within one to two days.</p>
+
+    <h2>WhatsApp</h2>
+    <p class="pending">A WhatsApp number hasn't been confirmed yet. Until it is, please use the contact form or email below.</p>
+
+    <h2>Contact form</h2>
+    <form>
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required />
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+      <div class="field">
+        <label for="house">Which house? (optional)</label>
+        <select id="house" name="house">
+          <option value="">Not sure yet / all three</option>
+          <option value="surfshub-tamraght">SurfsHUB Tamraght</option>
+          <option value="cactus-surf-skate-house">Cactus Surf &amp; Skate House</option>
+          <option value="hakuna-matata">Hakuna Matata Guest House</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Send message</button>
+      <p style="font-size: var(--text-meta); color: var(--color-muted); margin-top: var(--space-3)">
+        This form isn't wired to a backend yet — it needs a form-handling
+        service or a booking system hooked up before launch.
+      </p>
+    </form>
+
+    <h2>Where we are</h2>
+    <p>We're based in Tamraght, Morocco, with a real in-person presence: we
+      greet guests and help arrange transfers.</p>
+    <p class="pending">Our exact street address is pending confirmation and not yet published here or anywhere else on the site.</p>
+
+    <h2>Hours</h2>
+    <p>We don't keep fixed office hours. Airport pickups happen whenever a
+      flight lands, so we're reachable whenever you need us rather than
+      during a set window. Email is the most reliable way to reach us until
+      a phone/WhatsApp number is confirmed.</p>
+
+    <h2>Before you ask</h2>
+    <p>The <a href="/faq/">FAQ</a> already answers the most common questions:
+      deposits, what's included, getting from the airport, and more.
+      <a href="/compare/">See a house's own profile</a> for details specific
+      to that house.</p>
+  </section>
+</Layout>

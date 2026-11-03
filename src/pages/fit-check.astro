@@ -1,0 +1,189 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HouseCard from '../components/HouseCard.astro';
+import { houses } from '../data/houses';
+---
+<Layout
+  title="Which Surf House Fits You? Fit Check | Surfer Element"
+  description="Four short questions, no sign-up. We'll show you which Tamraght surf house fits what you're looking for, with the reasons tied to your answers."
+  navLabel="Fit check"
+>
+  <section class="container section">
+    <h1>Which house fits you?</h1>
+    <p class="prose">
+      Four short questions. No email, no sign-up. At the end, we'll show you
+      all three houses with the closest match first and tell you why, based
+      on what you answered. The other two stay fully visible underneath it,
+      because this is a nudge, not a hard recommendation.
+    </p>
+
+    <div id="quiz-root"></div>
+
+    <template id="tpl-quiz">
+      <div class="quiz-panel">
+        <div class="quiz-progress">
+          <span id="quiz-step-label">1 of 4</span>
+          <span class="quiz-progress__bar"><span id="quiz-progress-fill" style="width:25%"></span></span>
+        </div>
+        <h2 id="quiz-question" style="margin-top:0"></h2>
+        <div class="quiz-options" id="quiz-options"></div>
+        <div class="quiz-actions">
+          <button type="button" class="btn-quiet" id="quiz-back">&larr; Back</button>
+          <a class="btn-quiet" href="/compare/">Skip, show me all three</a>
+        </div>
+      </div>
+    </template>
+
+    <div id="quiz-results" hidden></div>
+
+    <p class="prose" style="margin-top: var(--space-8)">
+      Prefer to skip straight to the full comparison?
+      <a href="/compare/">See all three houses side by side &rarr;</a>
+    </p>
+  </section>
+</Layout>
+
+<script define:vars={{ houseData: houses }}>
+  // Fit-check interactive flow — DESIGN.md §7.4. Scoring logic per
+  // drafts/tamraght/core-pages/fit-check.md: each house accumulates points
+  // per answer, drawn from the real, sourced facts already in houses.ts —
+  // never an invented persona. "Kids" is a hard eligibility filter (only
+  // SurfsHUB takes children), not a style preference.
+  const questions = [
+    {
+      q: "Who's coming with you?",
+      options: [
+        { label: 'Just me', scores: {} },
+        { label: 'Me and a partner or a friend', scores: { 'hakuna-matata': 1 } },
+        { label: 'A small group', scores: { 'cactus-surf-skate-house': 1 } },
+        { label: 'My family, with kids', kidsFilter: true },
+      ],
+    },
+    {
+      q: 'How social do you want your evenings to be?',
+      options: [
+        { label: 'As social as possible: I want to meet people fast', scores: { 'cactus-surf-skate-house': 2 } },
+        { label: 'A mix: some evenings out, some quiet', scores: { 'hakuna-matata': 1 } },
+        { label: "Quiet: I'd rather wind down than go out", scores: { 'surfshub-tamraght': 2 } },
+      ],
+    },
+    {
+      q: 'What kind of house do you picture?',
+      options: [
+        { label: 'A bigger, busier hostel with a lot going on', scores: { 'cactus-surf-skate-house': 2 } },
+        { label: 'Something small, new and a little bohemian', scores: { 'hakuna-matata': 2 } },
+        { label: 'A calm, well-run house that feels like home', scores: { 'surfshub-tamraght': 2 } },
+      ],
+    },
+    {
+      q: 'Anything else that matters to you?',
+      options: [
+        { label: "I'd like skateboarding available, not just surfing", scores: { 'cactus-surf-skate-house': 2 } },
+        { label: 'I want a strictly no-party house', scores: { 'surfshub-tamraght': 2 } },
+        { label: 'None of these: just show me the match', scores: {} },
+      ],
+    },
+  ];
+
+  const root = document.getElementById('quiz-root');
+  const tpl = document.getElementById('tpl-quiz');
+  const resultsEl = document.getElementById('quiz-results');
+
+  let step = 0;
+  const answers = [];
+  const scores = { 'surfshub-tamraght': 0, 'cactus-surf-skate-house': 0, 'hakuna-matata': 0 };
+  let kidsRequired = false;
+
+  function render() {
+    root.innerHTML = '';
+    const node = tpl.content.cloneNode(true);
+    const q = questions[step];
+    node.getElementById('quiz-step-label').textContent = `${step + 1} of ${questions.length}`;
+    node.getElementById('quiz-progress-fill').style.width = `${((step + 1) / questions.length) * 100}%`;
+    node.getElementById('quiz-question').textContent = `Question ${step + 1} of ${questions.length}: ${q.q}`;
+    const optionsEl = node.getElementById('quiz-options');
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'quiz-option';
+      btn.setAttribute('role', 'radio');
+      btn.setAttribute('aria-pressed', answers[step] === i ? 'true' : 'false');
+      btn.innerHTML = `<span class="quiz-option__check"></span><span>${opt.label}</span>`;
+      btn.addEventListener('click', () => {
+        answers[step] = i;
+        step += 1;
+        if (step >= questions.length) {
+          finish();
+        } else {
+          render();
+        }
+      });
+      optionsEl.appendChild(btn);
+    });
+    const backBtn = node.getElementById('quiz-back');
+    backBtn.disabled = step === 0;
+    backBtn.addEventListener('click', () => {
+      if (step > 0) { step -= 1; render(); }
+    });
+    root.appendChild(node);
+  }
+
+  function finish() {
+    Object.keys(scores).forEach((k) => (scores[k] = 0));
+    kidsRequired = false;
+    answers.forEach((answerIndex, qIndex) => {
+      const opt = questions[qIndex].options[answerIndex];
+      if (opt.kidsFilter) kidsRequired = true;
+      if (opt.scores) {
+        Object.entries(opt.scores).forEach(([slug, pts]) => { scores[slug] += pts; });
+      }
+    });
+
+    let candidates = houseData;
+    let reason = '';
+    if (kidsRequired) {
+      candidates = houseData.filter((h) => h.takesKids);
+      reason = "You're travelling with kids: SurfsHUB Tamraght is the only one of the three houses that takes children.";
+    }
+
+    const ranked = [...candidates].sort((a, b) => scores[b.slug] - scores[a.slug]);
+    const top = ranked[0];
+    if (!reason) {
+      if (top.slug === 'cactus-surf-skate-house') reason = "You're after a social, high-energy house: Cactus is by far the most-reviewed and built around meeting people fast.";
+      else if (top.slug === 'hakuna-matata') reason = 'You described something small, new and a bit bohemian: that matches Hakuna Matata, the newest of the three.';
+      else reason = "You said you'd rather avoid a party atmosphere: SurfsHUB doesn't host parties, by house policy.";
+    }
+
+    const rest = houseData.filter((h) => h.slug !== top.slug);
+    root.hidden = true;
+    root.innerHTML = '';
+    resultsEl.hidden = false;
+    resultsEl.innerHTML = `
+      <h2>Your closest match</h2>
+      <div class="house-grid" id="quiz-result-grid"></div>
+      <p style="margin-top: var(--space-6)"><button type="button" class="btn-quiet" id="quiz-restart">Start over</button></p>
+    `;
+    document.getElementById('quiz-restart').addEventListener('click', () => {
+      step = 0; answers.length = 0; resultsEl.hidden = true; root.hidden = false; render();
+    });
+    // Render via the same HouseCard markup structure is done server-side
+    // normally; for the client-rendered result we keep it intentionally
+    // simple and link to the matched house's own profile and to the full
+    // comparison, rather than re-implementing the whole card client-side.
+    const grid = document.getElementById('quiz-result-grid');
+    [top, ...rest].forEach((h, i) => {
+      const card = document.createElement('article');
+      card.className = 'house-card';
+      card.innerHTML = `
+        ${i === 0 ? `<p class="guest-theme" style="border-color: var(${h.accentVar})"><strong>Closest match to your answers.</strong> ${reason}</p>` : ''}
+        <div class="house-card__photo"><div class="photo-placeholder">Photos from ${h.name} coming soon</div></div>
+        <div class="house-card__name"><span class="house-dot" style="background: var(${h.accentVar})"></span><h3>${h.name}</h3></div>
+        <div class="house-card__score"><span class="house-card__score-num">${h.score.toFixed(1)}</span><span class="house-card__score-label">/ 10 &middot; ${h.reviews} reviews on Booking.com</span></div>
+        <a class="btn btn-secondary" href="/houses/${h.slug}/">See ${h.name} &rarr;</a>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  render();
+</script>

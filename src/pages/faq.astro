@@ -1,0 +1,43 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const faqs = [
+  { q: 'Is Tamraght the same as Taghazout?', a: "No. Tamraght is its own village, about 2 km south of Taghazout and roughly 14 km north of Agadir. All three houses we work with are in Tamraght itself. Some booking sites and guides label Tamraght camps as \"Taghazout\" because they're close together on the same coast road. If you've seen that mix-up, this is why." },
+  { q: 'Is the airport transfer included?', a: 'Yes, both ways, at all three houses, as part of the standard price. It’s not a paid add-on. A driver meets you at Agadir Al Massira Airport (AGA) when you arrive and takes you back for your departure.' },
+  { q: "How do I get from Agadir airport to Tamraght if I'm not booking the included transfer?", a: "Tamraght is roughly 45 minutes to an hour from Agadir Al Massira Airport by road, depending on traffic. Taxi and shared-shuttle options also run between Agadir, Tamraght and Taghazout. If you're booking through us, you won't need any of this: the transfer is already included." },
+  { q: "What's the deposit, and when do I pay the rest?", a: 'You pay 15% of the total price on this site when you book. The remaining 85% is paid directly to the house in cash when you arrive. This mirrors how bookings have always worked directly with these houses, so it isn’t a new or unusual arrangement.' },
+  { q: 'What is actually included in the price?', a: 'All meals, daily surf coaching split by level, board and wetsuit for your stay, daily yoga, and the airport transfer both ways. See the full package and prices on the price-lock page.' },
+  { q: "What's the cancellation policy?", a: 'Cancellation terms are not yet finalized. We’d rather wait and confirm them properly than publish something vague.', pending: true },
+  { q: 'Are board and wetsuit included, or rented separately?', a: 'Included, at all three houses, for the whole stay, and swapped out as you progress, at no extra charge.' },
+  { q: 'Which spots will a beginner actually surf?', a: 'The coaches choose the spot each morning based on conditions, but beginner sessions on this stretch of coast typically run at gentler breaks such as Devil’s Rock and Banana Point. Exact spot choice is the coaches’ call on the day, not something we or the houses promise in advance.' },
+  { q: 'Can I bring my kids?', a: 'SurfsHUB Tamraght is the only one of the three houses we work with that takes children. Cactus Surf & Skate House and Hakuna Matata Guest House do not.' },
+  { q: 'What time is check-in and check-out?', a: 'Check-in runs until midnight at all three houses. Check-out is at 12:00 PM.' },
+  { q: 'Do you speak my language?', a: 'Our own team communicates with guests in English or French. This site is published in English, German, French, Spanish, Italian and Dutch so you can read everything in your own language; some individual houses also have staff who speak German or Spanish day to day.' },
+  { q: 'Why book through Surfer Element instead of the house directly?', a: 'Three reasons: your price is locked in once you book, even if that house’s own direct price rises later; we’ll help you work out which house actually fits you, based on real guest reviews rather than marketing copy; and you get one booking flow and one deposit, in your own language, instead of visiting three separate sites.' },
+  { q: 'Who is Surfer Element, and who pays you?', a: "We're a booking service paid by the three houses listed on this site, and we only represent these three." },
+];
+---
+<Layout
+  title="FAQ | Surfer Element"
+  description="Deposits, cancellations, getting from Agadir airport to Tamraght, what's included, and more — answered plainly, for all three houses we work with."
+  navLabel="FAQ"
+>
+  <section class="container section prose">
+    <h1>Frequently asked questions</h1>
+    <p>Answers here apply to all three houses we work with (SurfsHUB
+      Tamraght, Cactus Surf &amp; Skate House, Hakuna Matata Guest House),
+      since they now run the same package and price. Where something is
+      specific to one house, it's noted.</p>
+
+    <div>
+      {faqs.map((item) => (
+        <details class="faq-item">
+          <summary>{item.q}</summary>
+          <p class={item.pending ? 'pending' : undefined} style="margin-top: var(--space-3)">{item.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <p style="margin-top: var(--space-6)">Can't find your question here? <a href="/contact/">Get in touch &rarr;</a></p>
+  </section>
+</Layout>

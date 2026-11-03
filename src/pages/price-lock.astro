@@ -1,0 +1,71 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { pricing } from '../data/houses';
+---
+<Layout
+  title="Our Price Is Locked In | Surfer Element"
+  description="When you book through Surfer Element, your price doesn't rise later, even if the house's own direct price does. Here's how that works and why."
+  navLabel="Price lock"
+>
+  <section class="container section prose">
+    <h1>Our price is locked in</h1>
+    <p>When you book one of the three houses through Surfer Element, the
+      price you see is the price you pay, and it doesn't rise later, even if
+      that house's own direct price goes up afterward. All three houses have
+      agreed to this as a standing arrangement, not a one-time launch offer.</p>
+
+    <div class="price-panel">
+      <div class="price-panel__row"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 118 0v4"/></svg>
+        <span><strong>Our rate:</strong> €350 for 7 nights (beginner), same at all three houses</span></div>
+      <div class="price-panel__row"><span><strong>This rate is locked in.</strong> It doesn't rise when the houses' own prices do.</span></div>
+      <div class="price-panel__row"><span><strong>Rate set:</strong> 3 Nov 2026</span></div>
+    </div>
+
+    <h2>What this means in practice</h2>
+    <ul>
+      <li>The price and surf program are identical at all three houses: SurfsHUB Tamraght, Cactus Surf &amp; Skate House and Hakuna Matata Guest House.</li>
+      <li>Once you book through Surfer Element, your price for that stay is fixed. It won't change between booking and arrival, and it won't be affected if the house later raises what it charges travellers booking direct.</li>
+      <li>You pay a 15% deposit on this site at the time of booking. The remaining 85% is paid directly to the house, in cash, when you arrive. This is the same arrangement already used across Tamraght's surf houses.</li>
+    </ul>
+
+    <h2>The package, same at all three houses</h2>
+    <table class="price-table">
+      <thead><tr><th>Nights</th><th>Beginner (per person)</th><th>Intermediate (per person)</th></tr></thead>
+      <tbody>
+        {pricing.map((row) => (
+          <tr><td>{row.nights}</td><td>€{row.beginner}</td><td>€{row.intermediate}</td></tr>
+        ))}
+      </tbody>
+    </table>
+    <p>Shared dorm room is the base price. A private room is +€20 per room per night.</p>
+    <p><strong>Included at all three houses:</strong> all meals, daily coaching, daily yoga, and the airport transfer both ways: pickup from Agadir Al Massira Airport (AGA) when you arrive, and the drop-off when you leave. The transfer isn't a paid add-on; it's in the price shown above.</p>
+    <p style="font-size: var(--text-meta); color: var(--color-muted)">Confirmed and cross-checked against the live, published package on surfshub.com/tamraght, 3 Nov 2026. The other two houses have agreed to the same package and price.</p>
+
+    <h2>The deposit, in euros</h2>
+    <div class="price-panel">
+      <div class="price-panel__row"><span>15% deposit now: <strong>€52.50</strong></span></div>
+      <div class="price-panel__row"><span>At the house on arrival: <strong>€297.50</strong></span></div>
+    </div>
+    <p style="font-size: var(--text-meta); color: var(--color-muted)">Example for the 7-night beginner package, €350 total.</p>
+
+    <h2>Why we can offer this</h2>
+    <p>We negotiate the rate directly with each house. In exchange for a
+      lower, fixed rate, the three houses get bookings from markets they
+      can't easily reach on their own. Several of our visitors come from
+      France, Spain, Italy and the Netherlands, on top of Germany, and not
+      every house has its own site in all of those languages. It's an
+      ordinary wholesale arrangement, the same way a hotel gives a tour
+      operator a rate below its own front-desk price in exchange for
+      bookings it wouldn't otherwise get.</p>
+
+    <h2>What we don't claim</h2>
+    <p>We don't currently show a "cheaper than booking direct" comparison on
+      this site. Today, prices booked through Surfer Element and prices
+      booked directly with each house are the same. The real advantage of
+      the lock is what happens later: if a house raises its own direct
+      price, your price through Surfer Element stays where it was when you
+      booked. We'll only ever show a specific, dated, per-house savings
+      comparison once it's actually true for that house — never a blanket
+      "lowest price" claim.</p>
+  </section>
+</Layout>

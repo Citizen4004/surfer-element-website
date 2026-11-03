@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="512" height="512" role="img" aria-labelledby="t">
+  <title id="t">Surfer Element</title>
+  <!-- Provisional concept v1.1 (2026-11-03), pending founder approval. See DESIGN.md section 10.
+       Field-guide tag: ink tag body, serif "Se" monogram, terracotta eyelet.
+       Monogram is live text in Source Serif 4 Semibold: convert to outlines before production use. -->
+  <path d="M20 14 H53 A4 4 0 0 1 57 18 V46 A4 4 0 0 1 53 50 H20 L7 37 V27 Z" fill="#1D2A2F"/>
+  <circle cx="16" cy="32" r="3.4" fill="#A84A24"/>
+  <text x="38.5" y="40.5" text-anchor="middle" font-family="'Source Serif 4', Georgia, serif" font-weight="600" font-size="23" fill="#FFFDF8" letter-spacing="-0.3">Se</text>
+</svg>

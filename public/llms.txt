@@ -1,0 +1,28 @@
+# Surfer Element
+
+> Surfer Element is a booking service in Tamraght, Morocco, representing
+> three independent surf houses — SurfsHUB Tamraght, Cactus Surf & Skate
+> House and Hakuna Matata Guest House. One multilingual site to compare the
+> three houses, see real guest-review scores, and book with a locked-in
+> price and a single deposit, instead of visiting three separate sites.
+
+Surfer Element is paid by the three houses listed on this site and
+represents only them — it is not an independent directory of every Tamraght
+surf camp. All comparisons on this site are between these three houses only.
+
+## Core pages
+
+- [Home](https://surferelement.com/): overview and the fastest way to the fit check or the full comparison
+- [Compare the three houses](https://surferelement.com/compare/): the full side-by-side comparison, alphabetical by default
+- [Fit check](https://surferelement.com/fit-check/): a short quiz matching a traveller to the house that fits them
+- [Price lock](https://surferelement.com/price-lock/): how the fixed, locked-in price works
+- [SurfsHUB Tamraght](https://surferelement.com/houses/surfshub-tamraght/)
+- [Cactus Surf & Skate House](https://surferelement.com/houses/cactus-surf-skate-house/)
+- [Hakuna Matata Guest House](https://surferelement.com/houses/hakuna-matata/)
+- [About / how it works](https://surferelement.com/about/)
+- [FAQ](https://surferelement.com/faq/)
+- [Contact](https://surferelement.com/contact/)
+- [Tamraght guide](https://surferelement.com/guide/): seasonal and logistics content (spots, months, getting to Tamraght)
+
+This file is maintained by `website-publisher` and updated as new guide
+content is published.

@@ -1,0 +1,66 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HouseCard from '../components/HouseCard.astro';
+import { housesAlphabetical } from '../data/houses';
+---
+<Layout
+  title="Compare the Three Tamraght Surf Houses | Surfer Element"
+  description="Side-by-side: real Booking.com guest-review scores, what guests say, and who each Tamraght surf house fits — SurfsHUB, Cactus and Hakuna Matata."
+  navLabel="Compare"
+>
+  <section class="container section">
+    <h1>Compare the three houses</h1>
+    <p class="compare-note prose">
+      Listed alphabetically. Order never changes based on scores, price or
+      anything else. The only thing that reorders this list is your own
+      answers in the <a href="/fit-check/">fit check</a>.
+    </p>
+    <p class="prose">
+      Same village, same spots, the same surf program at all three houses.
+      What's different is the day-to-day feel of each house, and the honest
+      way to show that is real guest reviews, not our own description. Every
+      score below is from Booking.com, dated, and linked to the source
+      listing.
+    </p>
+
+    <div class="view-toggle" role="group" aria-label="Comparison view">
+      <button type="button" id="view-by-house" aria-pressed="true">By house</button>
+      <button type="button" id="view-by-question" aria-pressed="false">By question</button>
+    </div>
+
+    <div class="house-grid" id="house-grid">
+      {housesAlphabetical.map((h) => <HouseCard house={h} />)}
+    </div>
+
+    <p class="prose" style="margin-top: var(--space-8)">
+      <strong>Not sure which one is you?</strong>
+      <a href="/fit-check/">Take the fit check &rarr;</a>. Four short
+      questions, no sign-up, and we'll put the closest match first, with the
+      reason tied to your answers. The other two houses stay fully visible
+      below it.
+    </p>
+  </section>
+
+  <script>
+    // Mobile "By house / By question" toggle — DESIGN.md §7.1. Below 900px
+    // (see .view-toggle media query) this swaps the stacked house cards for
+    // a per-field comparison table so the comparison stays readable on a
+    // narrow screen without a carousel hiding two of the three houses.
+    const byHouseBtn = document.getElementById('view-by-house');
+    const byQuestionBtn = document.getElementById('view-by-question');
+    byHouseBtn?.addEventListener('click', () => {
+      byHouseBtn.setAttribute('aria-pressed', 'true');
+      byQuestionBtn?.setAttribute('aria-pressed', 'false');
+      document.getElementById('house-grid')?.classList.remove('view-by-question');
+    });
+    byQuestionBtn?.addEventListener('click', () => {
+      byQuestionBtn.setAttribute('aria-pressed', 'true');
+      byHouseBtn?.setAttribute('aria-pressed', 'false');
+      document.getElementById('house-grid')?.classList.add('view-by-question');
+      // Full per-field table view is a follow-up enhancement; for now this
+      // toggle keeps the same accessible card list, which already reads
+      // fine with a screen reader and on a narrow screen via the stacked
+      // cards. A true transposed table is tracked as a known follow-up.
+    });
+  </script>
+</Layout>
