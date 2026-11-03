@@ -1,11 +1,12 @@
 ---
+import { withBase } from "../lib/url";
 import type { House } from '../data/houses';
 interface Props {
   house: House;
   matchReason?: string;
 }
 const { house, matchReason } = Astro.props as Props;
-const houseUrl = `/houses/${house.slug}/`;
+const houseUrl = withBase(`/houses/${house.slug}/`);
 ---
 <article class="house-card" style={`--house-accent: var(${house.accentVar})`}>
   {matchReason && <p class="guest-theme" style={`border-color: var(${house.accentVar})`}><strong>Closest match to your answers.</strong> {matchReason}</p>}
@@ -58,7 +59,7 @@ const houseUrl = `/houses/${house.slug}/`;
     </div>
   </div>
 
-  <p class="house-card__price">Same price at all three houses. <a href="/price-lock/">How pricing and the deposit work &rarr;</a></p>
+  <p class="house-card__price">Same price at all three houses. <a href={withBase("/price-lock/")}>How pricing and the deposit work &rarr;</a></p>
 
   <a class="btn btn-secondary" href={houseUrl}>See {house.name} &rarr;</a>
 </article>

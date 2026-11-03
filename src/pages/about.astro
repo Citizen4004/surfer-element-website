@@ -1,4 +1,5 @@
 ---
+import { withBase } from "../lib/url";
 import Layout from '../layouts/Layout.astro';
 ---
 <Layout
@@ -33,8 +34,8 @@ import Layout from '../layouts/Layout.astro';
       some listings confuse it with), run the same surf program at the same
       price, and have real, checkable guest-review histories on Booking.com.
       What differs between them is the day-to-day feel of each house, which
-      is exactly what <a href="/compare/">the comparison page</a> and
-      <a href="/fit-check/">the fit check</a> are for.</p>
+      is exactly what <a href={withBase("/compare/")}>the comparison page</a> and
+      <a href={withBase("/fit-check/")}>the fit check</a> are for.</p>
 
     <h2>What we actually do</h2>
     <ul>
@@ -45,14 +46,14 @@ import Layout from '../layouts/Layout.astro';
         you don't have to juggle three different booking processes.</li>
       <li><strong>Keep your price locked in</strong> once you book, even if
         that house's own direct price rises afterward.
-        <a href="/price-lock/">How the price lock works &rarr;</a></li>
+        <a href={withBase("/price-lock/")}>How the price lock works &rarr;</a></li>
       <li><strong>Have a real, in-person presence in Tamraght</strong>, not a
         booking platform based somewhere else. We greet guests and help
         arrange transfers, including the airport pickup that's included in
         every package.</li>
       <li><strong>No fixed office hours.</strong> Airport pickups happen
         whenever a flight lands, so instead of posting opening hours, we're
-        reachable by <a href="/contact/">contact</a> whenever you need us.</li>
+        reachable by <a href={withBase("/contact/")}>contact</a> whenever you need us.</li>
     </ul>
     <p class="pending">Our exact street address is pending and not yet published here or anywhere else on the site.</p>
 
@@ -69,6 +70,6 @@ import Layout from '../layouts/Layout.astro';
       page for what's actually confirmed, rather than assuming.</p>
 
     <h2>Questions</h2>
-    <p><a href="/faq/">Read the FAQ &rarr;</a> or <a href="/contact/">get in touch &rarr;</a>.</p>
+    <p><a href={withBase("/faq/")}>Read the FAQ &rarr;</a> or <a href={withBase("/contact/")}>get in touch &rarr;</a>.</p>
   </section>
 </Layout>

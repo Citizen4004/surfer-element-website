@@ -1,4 +1,5 @@
 ---
+import { withBase } from "../../lib/url";
 import Layout from '../../layouts/Layout.astro';
 ---
 <Layout
@@ -20,8 +21,8 @@ import Layout from '../../layouts/Layout.astro';
       to Tamraght, a month-by-month surf guide, a solo-traveller guide, and
       a first-week-learning-to-surf guide.</p>
 
-    <p>In the meantime: <a href="/compare/">Compare the three houses &rarr;</a>
-      &middot; <a href="/fit-check/">Take the fit check &rarr;</a>
-      &middot; <a href="/faq/">Read the FAQ &rarr;</a></p>
+    <p>In the meantime: <a href={withBase("/compare/")}>Compare the three houses &rarr;</a>
+      &middot; <a href={withBase("/fit-check/")}>Take the fit check &rarr;</a>
+      &middot; <a href={withBase("/faq/")}>Read the FAQ &rarr;</a></p>
   </section>
 </Layout>

@@ -1,4 +1,5 @@
 ---
+import { withBase } from "../lib/url";
 import Layout from '../layouts/Layout.astro';
 import HouseCard from '../components/HouseCard.astro';
 import { housesAlphabetical } from '../data/houses';
@@ -13,7 +14,7 @@ import { housesAlphabetical } from '../data/houses';
     <p class="compare-note prose">
       Listed alphabetically. Order never changes based on scores, price or
       anything else. The only thing that reorders this list is your own
-      answers in the <a href="/fit-check/">fit check</a>.
+      answers in the <a href={withBase("/fit-check/")}>fit check</a>.
     </p>
     <p class="prose">
       Same village, same spots, the same surf program at all three houses.
@@ -34,7 +35,7 @@ import { housesAlphabetical } from '../data/houses';
 
     <p class="prose" style="margin-top: var(--space-8)">
       <strong>Not sure which one is you?</strong>
-      <a href="/fit-check/">Take the fit check &rarr;</a>. Four short
+      <a href={withBase("/fit-check/")}>Take the fit check &rarr;</a>. Four short
       questions, no sign-up, and we'll put the closest match first, with the
       reason tied to your answers. The other two houses stay fully visible
       below it.

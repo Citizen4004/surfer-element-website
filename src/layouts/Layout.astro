@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import DisclosureNote from '../components/DisclosureNote.astro';
+import { withBase, stripBase } from '../lib/url';
 
 interface Props {
   title: string;
@@ -26,36 +27,41 @@ const locales = [
   { code: 'nl', label: 'Nederlands' },
 ];
 
-const currentPath = Astro.url.pathname;
+// Astro.url.pathname already includes `base` when one is configured, so
+// strip it back off here to get the "logical" app path — the lang-switch
+// links below rebuild the URL with withBase(), and prefixing twice would
+// break them under the subpath deployment.
+const rawPath = Astro.url.pathname;
+const logicalPath = stripBase(rawPath);
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/logo/mark.svg" />
+    <link rel="icon" type="image/svg+xml" href={withBase('/logo/mark.svg')} />
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:site_name" content="Surfer Element" />
     <meta name="twitter:card" content="summary" />
-    <link rel="canonical" href={new URL(currentPath, Astro.site)} />
+    <link rel="canonical" href={new URL(rawPath, Astro.site)} />
   </head>
   <body>
     <header class="site-header" id="site-header">
       <div class="container site-header__bar">
-        <a class="site-header__logo" href="/">
-          <img src="/logo/mark.svg" alt="" width="28" height="28" />
+        <a class="site-header__logo" href={withBase('/')}>
+          <img src={withBase('/logo/mark.svg')} alt="" width="28" height="28" />
           <span class="site-header__logo-word">Surfer Element</span>
         </a>
         <nav class="site-nav" aria-label="Main">
           {nav.map((item) => (
-            <a href={item.href} aria-current={navLabel === item.label ? 'page' : undefined}>{item.label}</a>
+            <a href={withBase(item.href)} aria-current={navLabel === item.label ? 'page' : undefined}>{item.label}</a>
           ))}
         </nav>
         <div class="site-header__actions">
-          <a class="btn-quiet" href="/contact/">Ask us</a>
+          <a class="btn-quiet" href={withBase('/contact/')}>Ask us</a>
           <div class="lang-switch" id="lang-switch">
             <button class="lang-switch__button" id="lang-switch-button" aria-haspopup="true" aria-expanded="false">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></svg>
@@ -63,7 +69,7 @@ const currentPath = Astro.url.pathname;
             </button>
             <div class="lang-switch__menu" id="lang-switch-menu">
               {locales.map((l) => (
-                <a href={l.code === 'en' ? currentPath : `/${l.code}${currentPath}`} aria-current={l.code === 'en' ? 'true' : undefined}>{l.label}</a>
+                <a href={withBase(l.code === 'en' ? logicalPath : `/${l.code}${logicalPath}`)} aria-current={l.code === 'en' ? 'true' : undefined}>{l.label}</a>
               ))}
             </div>
           </div>
@@ -73,8 +79,8 @@ const currentPath = Astro.url.pathname;
         </div>
       </div>
       <nav class="mobile-nav container" id="mobile-nav" aria-label="Main, mobile">
-        {nav.map((item) => (<a href={item.href}>{item.label}</a>))}
-        <a href="/contact/">Ask us</a>
+        {nav.map((item) => (<a href={withBase(item.href)}>{item.label}</a>))}
+        <a href={withBase('/contact/')}>Ask us</a>
       </nav>
     </header>
 
@@ -89,20 +95,20 @@ const currentPath = Astro.url.pathname;
           <div>
             <h3>The houses</h3>
             <ul>
-              <li><a href="/houses/surfshub-tamraght/">SurfsHUB Tamraght</a></li>
-              <li><a href="/houses/cactus-surf-skate-house/">Cactus Surf &amp; Skate House</a></li>
-              <li><a href="/houses/hakuna-matata/">Hakuna Matata Guest House</a></li>
+              <li><a href={withBase('/houses/surfshub-tamraght/')}>SurfsHUB Tamraght</a></li>
+              <li><a href={withBase('/houses/cactus-surf-skate-house/')}>Cactus Surf &amp; Skate House</a></li>
+              <li><a href={withBase('/houses/hakuna-matata/')}>Hakuna Matata Guest House</a></li>
             </ul>
           </div>
           <div>
             <h3>Surfer Element</h3>
             <ul>
-              <li><a href="/compare/">Compare</a></li>
-              <li><a href="/fit-check/">Fit check</a></li>
-              <li><a href="/price-lock/">Price lock</a></li>
-              <li><a href="/about/">About</a></li>
-              <li><a href="/faq/">FAQ</a></li>
-              <li><a href="/contact/">Contact</a></li>
+              <li><a href={withBase('/compare/')}>Compare</a></li>
+              <li><a href={withBase('/fit-check/')}>Fit check</a></li>
+              <li><a href={withBase('/price-lock/')}>Price lock</a></li>
+              <li><a href={withBase('/about/')}>About</a></li>
+              <li><a href={withBase('/faq/')}>FAQ</a></li>
+              <li><a href={withBase('/contact/')}>Contact</a></li>
             </ul>
           </div>
           <div>

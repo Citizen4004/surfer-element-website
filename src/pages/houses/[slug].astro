@@ -1,4 +1,5 @@
 ---
+import { withBase } from "../../lib/url";
 import Layout from '../../layouts/Layout.astro';
 import { houses } from '../../data/houses';
 
@@ -18,7 +19,7 @@ const otherHouses = houses.filter((h) => h.slug !== house.slug);
   navLabel={house.name}
 >
   <section class="container section" style={`--house-accent: var(${house.accentVar})`}>
-    <p class="compare-note">One of the three houses we work with in Tamraght. <a href="/compare/">See how it compares to the other two &rarr;</a></p>
+    <p class="compare-note">One of the three houses we work with in Tamraght. <a href={withBase("/compare/")}>See how it compares to the other two &rarr;</a></p>
 
     <div class="house-hero"><div class="photo-placeholder">Photos from {house.name} coming soon</div></div>
 
@@ -30,7 +31,7 @@ const otherHouses = houses.filter((h) => h.slug !== house.slug);
       <li><strong>Booking.com score:</strong> {house.score.toFixed(1)} / 10 ({house.scoreLabel})</li>
       <li><strong>Reviews:</strong> {house.reviews} reviews on Booking.com &middot; checked {house.checkedDate} &middot; <a href="#">See the reviews on Booking.com &#8599;</a></li>
       {house.subscores.map((s) => <li><strong>{s.label}:</strong> {s.value.toFixed(1)} / 10</li>)}
-      <li><strong>Price:</strong> €150&ndash;€420 per person depending on length of stay and level (shared room; private room +€20/room/night), same as the other two houses we work with and locked in once you book. All meals, daily coaching, daily yoga and <strong>the airport transfer both ways</strong> are included — not a paid add-on. <a href="/price-lock/">See the full package and how the price lock works &rarr;</a></li>
+      <li><strong>Price:</strong> €150&ndash;€420 per person depending on length of stay and level (shared room; private room +€20/room/night), same as the other two houses we work with and locked in once you book. All meals, daily coaching, daily yoga and <strong>the airport transfer both ways</strong> are included — not a paid add-on. <a href={withBase("/price-lock/")}>See the full package and how the price lock works &rarr;</a></li>
     </ul>
 
     <h2>Photo gallery</h2>
@@ -64,17 +65,17 @@ const otherHouses = houses.filter((h) => h.slug !== house.slug);
     <p class="prose">In Tamraght village. Agadir Al Massira Airport (AGA) is roughly 45 minutes to an hour by road.</p>
 
     <h2>Booking</h2>
-    <p class="prose">Deposit: 15% paid on this site when you book. Balance: 85% paid directly to {house.name}, in cash, on arrival. <a href="/price-lock/">See the full price-lock explanation &rarr;</a></p>
+    <p class="prose">Deposit: 15% paid on this site when you book. Balance: 85% paid directly to {house.name}, in cash, on arrival. <a href={withBase("/price-lock/")}>See the full price-lock explanation &rarr;</a></p>
     <p class="prose"><strong>Check-in:</strong> until midnight. <strong>Check-out:</strong> 12:00 PM.</p>
 
-    <a class="btn btn-primary" href="/contact/">Book {house.name}</a>
+    <a class="btn btn-primary" href={withBase("/contact/")}>Book {house.name}</a>
 
-    <p style="margin-top: var(--space-8)">See the other houses: {otherHouses.map((h, i) => <>{i > 0 && ' · '}<a href={`/houses/${h.slug}/`}>{h.name}</a></>)}</p>
+    <p style="margin-top: var(--space-8)">See the other houses: {otherHouses.map((h, i) => <>{i > 0 && ' · '}<a href={withBase(`/houses/${h.slug}/`)}>{h.name}</a></>)}</p>
   </section>
 
   <div class="sticky-booking-bar">
     <strong>{house.name}</strong>
     <span>From €150 / 3 nights &middot; 15% deposit</span>
-    <a class="btn btn-primary" href="/contact/">Book</a>
+    <a class="btn btn-primary" href={withBase("/contact/")}>Book</a>
   </div>
 </Layout>

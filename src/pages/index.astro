@@ -1,4 +1,5 @@
 ---
+import { withBase } from "../lib/url";
 import Layout from '../layouts/Layout.astro';
 import { housesAlphabetical } from '../data/houses';
 ---
@@ -29,8 +30,8 @@ import { housesAlphabetical } from '../data/houses';
       <p>Start the fit check. Four short questions, no sign-up, and we'll show
         you which house fits what you're looking for, with the reasons tied
         to your answers.</p>
-      <a class="btn btn-primary" href="/fit-check/" style="width:100%">Start the fit check</a>
-      <p style="text-align:center; margin-bottom:0"><a class="btn-quiet" href="/compare/">Or see all three houses side by side</a></p>
+      <a class="btn btn-primary" href={withBase("/fit-check/")} style="width:100%">Start the fit check</a>
+      <p style="text-align:center; margin-bottom:0"><a class="btn-quiet" href={withBase("/compare/")}>Or see all three houses side by side</a></p>
     </div>
   </section>
 
@@ -40,12 +41,12 @@ import { housesAlphabetical } from '../data/houses';
       <ol>
         <li><strong>Tell us what you're looking for, or compare all three yourself.</strong>
           The fit check takes about a minute. Prefer to look yourself? The
-          <a href="/compare/">comparison page</a> has everything side by side:
+          <a href={withBase("/compare/")}>comparison page</a> has everything side by side:
           real guest-review scores, what guests keep mentioning, and who each
           house does and doesn't suit.</li>
         <li><strong>Book with a price that's locked in.</strong> Once you see
           your price, it doesn't rise, even if the house's own direct price
-          does later. <a href="/price-lock/">How the price lock works &rarr;</a></li>
+          does later. <a href={withBase("/price-lock/")}>How the price lock works &rarr;</a></li>
         <li><strong>Pay a 15% deposit now, the rest at the house.</strong> You
           pay the deposit on this site when you book; the balance is paid
           directly to the house when you arrive, the same way it's always
@@ -68,7 +69,7 @@ import { housesAlphabetical } from '../data/houses';
               <h3>{h.name}</h3>
             </div>
             <p>{h.theme.slice(0, 140)}&hellip;</p>
-            <a class="btn btn-secondary" href={`/houses/${h.slug}/`}>See {h.name} &rarr;</a>
+            <a class="btn btn-secondary" href={withBase(`/houses/${h.slug}/`)}>See {h.name} &rarr;</a>
           </article>
         ))}
       </div>
@@ -81,18 +82,18 @@ import { housesAlphabetical } from '../data/houses';
       <p>We don't write our own description of what each house is like. We
         read what real guests wrote on Booking.com and summarize it honestly,
         good and less-good. Every score and every theme on this site is dated
-        and links back to the source. <a href="/compare/">See the full comparison &rarr;</a></p>
+        and links back to the source. <a href={withBase("/compare/")}>See the full comparison &rarr;</a></p>
 
       <h2>A booking service, not a directory</h2>
       <p>Surfer Element works with these three houses and represents only
         them. We don't list every surf camp in Tamraght, and we're paid by
         the houses you book through us. We'd rather say that plainly than
-        bury it in fine print. <a href="/about/">More about how this works &rarr;</a></p>
+        bury it in fine print. <a href={withBase("/about/")}>More about how this works &rarr;</a></p>
 
       <h2>Questions before you book?</h2>
-      <p>The <a href="/faq/">FAQ</a> covers deposits, cancellations, getting
+      <p>The <a href={withBase("/faq/")}>FAQ</a> covers deposits, cancellations, getting
         from Agadir airport to Tamraght, and what's included. Can't find it
-        there? <a href="/contact/">Get in touch &rarr;</a></p>
+        there? <a href={withBase("/contact/")}>Get in touch &rarr;</a></p>
     </div>
   </section>
 </Layout>

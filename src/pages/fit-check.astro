@@ -1,4 +1,5 @@
 ---
+import { withBase } from "../lib/url";
 import Layout from '../layouts/Layout.astro';
 import HouseCard from '../components/HouseCard.astro';
 import { houses } from '../data/houses';
@@ -29,7 +30,7 @@ import { houses } from '../data/houses';
         <div class="quiz-options" id="quiz-options"></div>
         <div class="quiz-actions">
           <button type="button" class="btn-quiet" id="quiz-back">&larr; Back</button>
-          <a class="btn-quiet" href="/compare/">Skip, show me all three</a>
+          <a class="btn-quiet" href={withBase("/compare/")}>Skip, show me all three</a>
         </div>
       </div>
     </template>
@@ -38,12 +39,12 @@ import { houses } from '../data/houses';
 
     <p class="prose" style="margin-top: var(--space-8)">
       Prefer to skip straight to the full comparison?
-      <a href="/compare/">See all three houses side by side &rarr;</a>
+      <a href={withBase("/compare/")}>See all three houses side by side &rarr;</a>
     </p>
   </section>
 </Layout>
 
-<script define:vars={{ houseData: houses }}>
+<script define:vars={{ houseData: houses, siteBase: withBase('/') }}>
   // Fit-check interactive flow — DESIGN.md §7.4. Scoring logic per
   // drafts/tamraght/core-pages/fit-check.md: each house accumulates points
   // per answer, drawn from the real, sourced facts already in houses.ts —
@@ -179,7 +180,7 @@ import { houses } from '../data/houses';
         <div class="house-card__photo"><div class="photo-placeholder">Photos from ${h.name} coming soon</div></div>
         <div class="house-card__name"><span class="house-dot" style="background: var(${h.accentVar})"></span><h3>${h.name}</h3></div>
         <div class="house-card__score"><span class="house-card__score-num">${h.score.toFixed(1)}</span><span class="house-card__score-label">/ 10 &middot; ${h.reviews} reviews on Booking.com</span></div>
-        <a class="btn btn-secondary" href="/houses/${h.slug}/">See ${h.name} &rarr;</a>
+        <a class="btn btn-secondary" href="${siteBase}houses/${h.slug}/">See ${h.name} &rarr;</a>
       `;
       grid.appendChild(card);
     });

@@ -25,6 +25,14 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+        env:
+          # Flip to 'true' once surferelement.com's DNS is pointed at
+          # GitHub Pages and the custom domain is verified in this repo's
+          # Settings → Pages (see README.md). Until then this must stay
+          # 'false' so the build's base path matches where it's actually
+          # served (the citizen4004.github.io/surfer-element-website/
+          # subpath) — see astro.config.mjs and src/lib/url.ts for why.
+          USE_CUSTOM_DOMAIN: 'false'
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
