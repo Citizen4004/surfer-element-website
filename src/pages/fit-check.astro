@@ -145,6 +145,42 @@ import { houses, housesAlphabetical } from '../data/houses';
     if (moveFocus) document.getElementById('quiz-question')?.focus();
   }
 
+  // One-line "why" per house, tied to the actual answers given (DESIGN.md
+  // §7.4: a reason for all three results, not only the top match) — drawn
+  // only from the real, sourced facts already in houses.ts, never an
+  // invented persona. Answer indices: Q0 who's coming (3 = kids), Q1 how
+  // social (0 social / 1 mix / 2 quiet), Q2 house type (0 busy / 1
+  // bohemian / 2 calm), Q3 extra (0 skate / 1 no-party / 2 none).
+  function reasonFor(slug) {
+    const name = houseData.find((h) => h.slug === slug).name;
+    if (kidsRequired) {
+      return slug === 'surfshub-tamraght'
+        ? "You're travelling with kids: SurfsHUB is the only one of the three houses that takes children."
+        : `You're travelling with kids, and ${name} doesn't take children.`;
+    }
+    const social = answers[1];
+    const type = answers[2];
+    const extra = answers[3];
+    const group = answers[0];
+    if (slug === 'cactus-surf-skate-house') {
+      if (social === 0 || type === 0 || extra === 0) {
+        return "You said you want to meet people fast: Cactus is by far the most-reviewed and built around a lively, social house.";
+      }
+      return 'Cactus leans toward the busiest, most social end of the three houses, more than what you described wanting.';
+    }
+    if (slug === 'hakuna-matata') {
+      if (group === 1 || type === 1) {
+        return 'You described something small and a little bohemian: that matches Hakuna Matata, the newest and smallest of the three.';
+      }
+      return "Hakuna Matata is the smallest and newest of the three, worth a look if a quieter, more intimate house appeals once you've seen the others.";
+    }
+    // surfshub-tamraght
+    if (social === 2 || type === 2 || extra === 1) {
+      return "You said you'd rather avoid a party atmosphere: SurfsHUB doesn't host parties, by house policy, and is the best-staffed of the three.";
+    }
+    return "SurfsHUB is the calmest and most consistently well-staffed of the three, worth a look if an organised, low-key week appeals.";
+  }
+
   function finish() {
     Object.keys(scores).forEach((k) => (scores[k] = 0));
     kidsRequired = false;
@@ -156,20 +192,10 @@ import { houses, housesAlphabetical } from '../data/houses';
       }
     });
 
-    let candidates = houseData;
-    let reason = '';
-    if (kidsRequired) {
-      candidates = houseData.filter((h) => h.takesKids);
-      reason = "You're travelling with kids: SurfsHUB Tamraght is the only one of the three houses that takes children.";
-    }
-
+    const candidates = kidsRequired ? houseData.filter((h) => h.takesKids) : houseData;
     const ranked = [...candidates].sort((a, b) => scores[b.slug] - scores[a.slug]);
     const top = ranked[0];
-    if (!reason) {
-      if (top.slug === 'cactus-surf-skate-house') reason = "You're after a social, high-energy house: Cactus is by far the most-reviewed and built around meeting people fast.";
-      else if (top.slug === 'hakuna-matata') reason = 'You described something small, new and a bit bohemian: that matches Hakuna Matata, the newest of the three.';
-      else reason = "You said you'd rather avoid a party atmosphere: SurfsHUB doesn't host parties, by house policy.";
-    }
+    const reason = reasonFor(top.slug);
 
     const restSlugs = houseData
       .filter((h) => h.slug !== top.slug)
@@ -186,12 +212,18 @@ import { houses, housesAlphabetical } from '../data/houses';
     cards.querySelectorAll('.house-card').forEach((c) => { bySlug[c.dataset.slug] = c; });
     [top.slug, ...restSlugs].forEach((slug, i) => {
       const card = bySlug[slug];
+      const slot = card.querySelector('.house-card__match');
       if (i === 0) {
-        const slot = card.querySelector('.house-card__match');
         slot.className = 'house-card__match match-label';
         const label = document.createElement('strong');
         label.textContent = 'Closest match to your answers';
         slot.append(label, document.createTextNode(reason));
+      } else {
+        // Equal-weight per DESIGN.md §2: same plain treatment for both
+        // non-matched houses, no shaded box, no "closest match" label —
+        // just their own reason tied to the same answers.
+        slot.className = 'house-card__match match-note';
+        slot.append(document.createTextNode(reasonFor(slug)));
       }
       grid.appendChild(card);
     });

@@ -51,8 +51,10 @@ const checked = formatCheckedDate(house.checkedDate);
     ))}
   </div>
 
-  <div>
-    <p class="guest-theme" style={`border-color: var(${house.accentVar})`}>{house.theme}</p>
+  <div class="guest-themes">
+    {house.themes.map((t) => (
+      <p class="guest-theme" style={`border-color: var(${house.accentVar})`}>{t}</p>
+    ))}
     <p class="guest-theme__meta">Summarised from Booking.com guest reviews, not quoted verbatim &middot; checked {checked} &middot; <a href={reviewsUrl} target="_blank" rel="noopener noreferrer nofollow">Read them on Booking.com &#8599;<span class="visually-hidden"> (opens in a new tab)</span></a></p>
   </div>
 

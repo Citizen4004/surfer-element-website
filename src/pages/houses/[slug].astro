@@ -59,7 +59,7 @@ const houseSchema = [
     <div class="house-hero"><PhotoPlaceholder name={house.name} /></div>
 
     <h1>{house.name}</h1>
-    <p class="prose">{house.theme}</p>
+    <p class="prose">{house.blurb}</p>
 
     <h2>At a glance</h2>
     <ul>
@@ -76,7 +76,11 @@ const houseSchema = [
 
     <h2>What guests say about {house.name}</h2>
     <p class="prose">We don't write our own description of the atmosphere here. This is a summary of what real guests wrote on Booking.com.</p>
-    <p class="guest-theme" style={`border-color: var(${house.accentVar})`}>{house.theme}</p>
+    <div class="guest-themes">
+      {house.themes.map((t) => (
+        <p class="guest-theme" style={`border-color: var(${house.accentVar})`}>{t}</p>
+      ))}
+    </div>
     <p class="guest-theme__meta">Summarised from Booking.com guest reviews, not quoted verbatim &middot; checked {checked} &middot; <a href={reviewsUrl} target="_blank" rel="noopener noreferrer nofollow">Read them on Booking.com &#8599;<span class="visually-hidden"> (opens in a new tab)</span></a></p>
 
     <div class="fit-lists fit-lists--wide" style="margin-block: var(--space-6)">

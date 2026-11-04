@@ -133,6 +133,10 @@ button.btn-quiet { min-height: 44px; }
 .subscore__num { flex: 0 0 2.5rem; font-variant-numeric: tabular-nums; font-weight: var(--weight-semibold); }
 .subscore__bar { flex: 1; height: 6px; border-radius: var(--radius-pill); background: var(--color-border); overflow: hidden; }
 .subscore__bar span { display: block; height: 100%; background: var(--color-ink-2); }
+/* DESIGN.md §7.1-7.2: "What guests keep mentioning" is 3 separate short
+   paraphrases, each its own block with its own left accent rule, not one
+   dense paragraph doing several jobs at once. */
+.guest-themes { display: flex; flex-direction: column; gap: var(--space-3); }
 .guest-theme { max-width: var(--measure); margin: 0; border-left: 3px solid var(--house-accent, var(--color-primary)); padding-left: var(--space-4); font-family: var(--font-serif); font-size: var(--text-lead); line-height: var(--leading-body); color: var(--color-ink); }
 .guest-theme__meta { font-family: var(--font-sans); font-size: var(--text-meta); color: var(--color-muted); margin: var(--space-2) 0 0; max-width: var(--measure); }
 .house-card__name-block > p { margin: var(--space-1) 0 0; }
@@ -146,10 +150,14 @@ button.btn-quiet { min-height: 44px; }
 
 /* Fit-check result label (DESIGN.md §7.4). Deliberately quiet: a plain
    label plus the reason tied to the visitor's answers, never a badge,
-   colour fill or "winner" styling. Empty on the other cards, so with
-   subgrid their photos still line up with the matched card's photo. */
+   colour fill or "winner" styling. The other two cards get their own
+   one-line reason too (DESIGN.md §7.4: a reason for all three, not only the
+   top match) in the plainer .match-note style, with no shaded box and no
+   "closest match" label, so the top card stays the only one visually
+   singled out while every card still explains its own relevance. */
 .match-label { background: var(--color-subtle); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); font-size: var(--text-small); color: var(--color-ink); }
 .match-label strong { display: block; font-weight: var(--weight-semibold); }
+.match-note { font-size: var(--text-small); color: var(--color-ink-2); }
 
 /* Mobile by-house/by-question toggle */
 .view-toggle { display: inline-flex; border: 1px solid var(--color-border-strong); border-radius: var(--radius-pill); padding: 2px; margin-bottom: var(--space-5); }

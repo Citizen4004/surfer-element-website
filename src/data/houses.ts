@@ -12,7 +12,12 @@ export interface House {
   scoreLabel: string;
   reviews: number;
   subscores: { label: string; value: number }[];
-  theme: string;
+  /** One distinct, short line for teaser spots (house page intro, home
+   * page card) — never a repeat of any of the 3 `themes` below. */
+  blurb: string;
+  /** 3 short, separately paraphrased guest themes (DESIGN.md §7.1-7.2) —
+   * never one dense paragraph, never a verbatim quote. */
+  themes: string[];
   goodFitIf: string[];
   notAFitIf: string[];
   takesKids: boolean;
@@ -36,8 +41,12 @@ export const houses: House[] = [
       { label: 'Value for money', value: 8.7 },
       { label: 'Location', value: 7.9 },
     ],
-    theme:
-      'Guests consistently describe Cactus as lively and social; more than one review compares the house to a flatshare of surfers. The reception team is mentioned as multilingual: reviews note Arabic, German, Spanish and English all being spoken there. With close to four times as many reviews as either of the other two houses, there is a lot of guest history behind these numbers.',
+    blurb: 'The social hub of the three, by far the most-reviewed and built for meeting people fast.',
+    themes: [
+      'Guests consistently describe Cactus as lively and social, more than one review comparing the house to a flatshare of surfers.',
+      'The reception team is mentioned as multilingual: reviews note Arabic, German, Spanish and English all being spoken there.',
+      'With close to four times as many reviews as either of the other two houses, there is a lot of guest history behind these numbers.',
+    ],
     goodFitIf: [
       'you want to meet a lot of people quickly and don’t mind a busier house',
       'you like the idea of skateboarding available alongside surfing',
@@ -66,8 +75,12 @@ export const houses: House[] = [
       { label: 'Value for money', value: 9.4 },
       { label: 'Location', value: 9.3 },
     ],
-    theme:
-      'Reviewers describe the house as small, new and a little bohemian, with rooftop jam sessions and bonfires coming up often. Hosts are named across reviews — Sara, Safwan and Simo appear, among others — suggesting a newer, more varied team than the other two houses. With the fewest reviews of the three (it’s also the newest), it scores highest on both location and value for money.',
+    blurb: 'The newest and smallest of the three, with a bohemian, jam-session character.',
+    themes: [
+      'Reviewers describe the house as small, new and a little bohemian, with rooftop jam sessions and bonfires coming up often.',
+      'Hosts are named across reviews, Sara, Safwan and Simo among others, suggesting a newer, more varied team than the other two houses.',
+      'It has the fewest reviews of the three (it’s also the newest), yet scores highest on both location and value for money.',
+    ],
     goodFitIf: [
       'you want something small, new and a bit bohemian',
       'you’d rather be in a smaller house than a bigger hostel',
@@ -96,8 +109,12 @@ export const houses: House[] = [
       { label: 'Value for money', value: 9.4 },
       { label: 'Location', value: 8.8 },
     ],
-    theme:
-      'Guests consistently describe the house as feeling like home. The same two staff members are named repeatedly across many different reviews — Badr and Khadija come up again and again, pointing to a small, stable core team rather than rotating staff. Shared breakfast and dinner are mentioned often as the social centre of the stay. Several reviews note, approvingly, that the house has a clear no-parties policy, and that children are genuinely welcome.',
+    blurb: 'The calm, family-run house: best-reviewed and best-staffed of the three.',
+    themes: [
+      'Guests consistently describe the house as feeling like home.',
+      'The same two staff members, Badr and Khadija, are named repeatedly across many different reviews, pointing to a small, stable core team rather than rotating staff.',
+      'Shared breakfast and dinner are mentioned often as the social centre of the stay, and several reviews note, approvingly, the house’s clear no-parties policy and that children are genuinely welcome.',
+    ],
     goodFitIf: [
       'you want the week to feel calm, organised and looked after',
       'you’re travelling with kids — SurfsHUB is the only one of the three houses that takes children',

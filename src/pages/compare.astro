@@ -101,7 +101,7 @@ const compareSchema = housesAlphabetical.map((h) => ({
         {housesAlphabetical.map((h) => (
           <div class="bq-question__house" style={`--house-accent: var(${h.accentVar})`}>
             <h4>{h.name}</h4>
-            <p>{h.theme}</p>
+            {h.themes.map((t) => <p>{t}</p>)}
             <p class="guest-theme__meta">Summarised from Booking.com guest reviews, not quoted verbatim &middot; checked {formatCheckedDate(h.checkedDate)} &middot; <a href={h.bookingUrl} target="_blank" rel="noopener noreferrer nofollow">Read them on Booking.com &#8599;<span class="visually-hidden"> (opens in a new tab)</span></a></p>
           </div>
         ))}

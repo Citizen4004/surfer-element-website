@@ -2,7 +2,6 @@
 import { withBase } from "../lib/url";
 import Layout from '../layouts/Layout.astro';
 import { housesAlphabetical } from '../data/houses';
-import { truncateWords } from '../lib/format';
 import PhotoPlaceholder from '../components/PhotoPlaceholder.astro';
 import DisclosureNote from '../components/DisclosureNote.astro';
 ---
@@ -72,7 +71,7 @@ import DisclosureNote from '../components/DisclosureNote.astro';
               <span class="house-dot" style={`background: var(${h.accentVar})`} aria-hidden="true"></span>
               <h3>{h.name}</h3>
             </div>
-            <p>{truncateWords(h.theme, 140)}</p>
+            <p>{h.blurb}</p>
             <a class="btn btn-secondary" href={withBase(`/houses/${h.slug}/`)}>See {h.name} &rarr;</a>
           </article>
         ))}
