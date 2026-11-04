@@ -90,7 +90,7 @@ const jsonLd = {
   ],
 };
 
-const ogImage = new URL(withBase('/og/og-image.svg'), Astro.site).toString();
+const ogImage = new URL(withBase('/og/og-image.png'), Astro.site).toString();
 
 const nav = [
   { href: '/compare/', label: 'Compare' },
@@ -130,7 +130,7 @@ const locales = [
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:locale" content="en_GB" />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Surfer Element — three surf houses in Tamraght, one way to book" />

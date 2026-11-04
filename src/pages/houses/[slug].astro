@@ -1,7 +1,7 @@
 ---
 import { withBase } from "../../lib/url";
 import Layout from '../../layouts/Layout.astro';
-import { houses, bookingSearchUrl } from '../../data/houses';
+import { houses } from '../../data/houses';
 import { formatCheckedDate, formatScore } from '../../lib/format';
 import PhotoPlaceholder from '../../components/PhotoPlaceholder.astro';
 import DisclosureNote from '../../components/DisclosureNote.astro';
@@ -15,7 +15,7 @@ export function getStaticPaths() {
 
 const { house } = Astro.props;
 const otherHouses = houses.filter((h) => h.slug !== house.slug);
-const reviewsUrl = bookingSearchUrl(house.name);
+const reviewsUrl = house.bookingUrl;
 const checked = formatCheckedDate(house.checkedDate);
 
 // entity/entity-brief.md "Fixes" + "Starting JSON-LD": the camp is the

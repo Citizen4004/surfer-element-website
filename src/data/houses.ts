@@ -19,6 +19,7 @@ export interface House {
   signatureMoment: string;
   rooms: string;
   staffLanguages: string;
+  bookingUrl: string;
 }
 
 export const houses: House[] = [
@@ -50,6 +51,7 @@ export const houses: House[] = [
     signatureMoment: 'a social evening or the skate setup',
     rooms: 'Shared dorm bed is the base package (6- and 8-bed dorms with lockers). A private double is available as a paid upgrade.',
     staffLanguages: 'Cactus’s own reception is reported to speak Arabic, German, Spanish and English.',
+    bookingUrl: 'https://www.booking.com/hotel/ma/cactus-surf-house.html',
   },
   {
     slug: 'hakuna-matata',
@@ -79,6 +81,7 @@ export const houses: House[] = [
     signatureMoment: 'a rooftop jam session, bonfire or coworking corner',
     rooms: 'A 4-bed women-only dorm, a 4-bed mixed dorm, a twin with shared bath, a triple with private bath, and a garden-view double/twin deluxe room, per its Booking.com listing.',
     staffLanguages: 'Not formally stated, though guest reviews show hosts handling English, French and German-speaking guests directly.',
+    bookingUrl: 'https://www.booking.com/hotel/ma/hakuna-matata-guest-house.html',
   },
   {
     slug: 'surfshub-tamraght',
@@ -109,18 +112,16 @@ export const houses: House[] = [
     signatureMoment: 'the shared table / a calm evening',
     rooms: 'Shared dorm bed is the base package. Private rooms are a paid upgrade. SurfsHUB’s own published room list includes mixed and women-only dorms, doubles, triples and a twin.',
     staffLanguages: 'Not stated on its public listing — ask us before booking and we’ll check.',
+    bookingUrl: 'https://www.booking.com/hotel/ma/surfshub-hostel-tamraght.html',
   },
 ];
 
 export const housesAlphabetical = [...houses].sort((a, b) => a.name.localeCompare(b.name));
 
-// Each house's exact Booking.com listing URL hasn't been captured in the
-// pipeline yet (local-market-specialist/founder still need to confirm the
-// canonical permalink per house — see citations/tamraght-citations.md).
-// Until then, "See the reviews on Booking.com" links go to a real,
-// functioning Booking.com search for the house's name rather than a dead
-// href="#" anchor. Replace with the confirmed listing URL per house once
-// it's available.
+// Real canonical Booking.com listing URLs (verified live, 2026-11-04) are
+// now set per house as `bookingUrl` above — use that directly. This search
+// fallback is kept only as a safety net for a house added later whose
+// listing URL hasn't been looked up yet.
 export function bookingSearchUrl(houseName: string): string {
   // houseName already includes "Tamraght" for some houses (e.g. "SurfsHUB
   // Tamraght") but not others, so append only "Morocco" rather than

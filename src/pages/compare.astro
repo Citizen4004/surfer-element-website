@@ -3,7 +3,7 @@ import { withBase } from "../lib/url";
 import Layout from '../layouts/Layout.astro';
 import HouseCard from '../components/HouseCard.astro';
 import DisclosureNote from '../components/DisclosureNote.astro';
-import { housesAlphabetical, bookingSearchUrl } from '../data/houses';
+import { housesAlphabetical } from '../data/houses';
 import { formatCheckedDate, formatScore } from '../lib/format';
 
 // Short column labels for the narrow "By question" table. Full names stay
@@ -102,7 +102,7 @@ const compareSchema = housesAlphabetical.map((h) => ({
           <div class="bq-question__house" style={`--house-accent: var(${h.accentVar})`}>
             <h4>{h.name}</h4>
             <p>{h.theme}</p>
-            <p class="guest-theme__meta">Summarised from Booking.com guest reviews, not quoted verbatim &middot; checked {formatCheckedDate(h.checkedDate)} &middot; <a href={bookingSearchUrl(h.name)} target="_blank" rel="noopener noreferrer nofollow">Read them on Booking.com &#8599;<span class="visually-hidden"> (opens in a new tab)</span></a></p>
+            <p class="guest-theme__meta">Summarised from Booking.com guest reviews, not quoted verbatim &middot; checked {formatCheckedDate(h.checkedDate)} &middot; <a href={h.bookingUrl} target="_blank" rel="noopener noreferrer nofollow">Read them on Booking.com &#8599;<span class="visually-hidden"> (opens in a new tab)</span></a></p>
           </div>
         ))}
       </section>

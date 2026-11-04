@@ -2,7 +2,6 @@
 import { withBase } from "../lib/url";
 import { formatCheckedDate, formatScore } from "../lib/format";
 import type { House } from '../data/houses';
-import { bookingSearchUrl } from '../data/houses';
 import PhotoPlaceholder from './PhotoPlaceholder.astro';
 interface Props {
   house: House;
@@ -13,7 +12,7 @@ interface Props {
 }
 const { house, matchSlot } = Astro.props as Props;
 const houseUrl = withBase(`/houses/${house.slug}/`);
-const reviewsUrl = bookingSearchUrl(house.name);
+const reviewsUrl = house.bookingUrl;
 const checked = formatCheckedDate(house.checkedDate);
 // DESIGN.md §7.1 fixed anatomy. Each top-level child below is one grid row
 // (8 rows, 9 with matchSlot) — keep that count identical for every house.
