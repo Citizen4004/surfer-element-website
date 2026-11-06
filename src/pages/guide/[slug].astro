@@ -29,6 +29,8 @@ const related = d.related
   .map((slug) => published.find((p) => p.data.slug === slug))
   .filter((p): p is GuideEntry => Boolean(p));
 
+const parent = d.parent ? published.find((p) => p.data.slug === d.parent) : undefined;
+
 const pathname = guidePath(d.slug);
 const canonical = new URL(withBase(pathname), Astro.site).toString();
 const siteOrigin = new URL(withBase('/'), Astro.site).toString();
@@ -71,6 +73,7 @@ const pageSchema: Record<string, unknown>[] = [
     datePublished: publishedIso,
     dateModified: updatedIso,
     image: [schemaImage],
+    ...(d.aboutPlace ? { about: { '@type': 'Place', name: d.aboutPlace } } : {}),
     author: orgRef,
     publisher: orgRef,
   },
@@ -80,7 +83,10 @@ const pageSchema: Record<string, unknown>[] = [
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: siteOrigin },
       { '@type': 'ListItem', position: 2, name: 'Guide', item: new URL(withBase('/guide/'), Astro.site).toString() },
-      { '@type': 'ListItem', position: 3, name: d.title, item: canonical },
+      ...(parent
+        ? [{ '@type': 'ListItem', position: 3, name: parent.data.title, item: new URL(withBase(guidePath(parent.data.slug)), Astro.site).toString() }]
+        : []),
+      { '@type': 'ListItem', position: parent ? 4 : 3, name: d.title, item: canonical },
     ],
   },
 ];
@@ -114,6 +120,7 @@ if (d.faq.length > 0) {
       <ol>
         <li><a href={withBase('/')}>Home</a></li>
         <li><a href={withBase('/guide/')}>Guide</a></li>
+        {parent && <li><a href={withBase(guidePath(parent.data.slug))}>{parent.data.title}</a></li>}
         <li aria-current="page">{d.title}</li>
       </ol>
     </nav>

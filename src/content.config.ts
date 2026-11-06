@@ -54,6 +54,15 @@ const guide = defineCollection({
 
         // The main guide for a topic; listed first on /guide/.
         pillar: z.boolean().default(false),
+        // Slug of the pillar post this one sits under. Adds it to the
+        // breadcrumb (Home > Guide > Pillar > Post) and BreadcrumbList schema.
+        // Leave out for a post that is not part of that hub (it then reads
+        // Home > Guide > Post). Unknown slugs fail the build.
+        parent: z.string().regex(kebab).optional(),
+        // Place the post is about, e.g. "Taghazout, Morocco". Emitted as
+        // BlogPosting.about (a Place). It is never attached to the agency's
+        // Organization node, which carries no address or location.
+        aboutPlace: z.string().min(3).max(80).optional(),
         // Slugs of other guide posts to list under "Related guides".
         // Unknown slugs fail the build; draft targets are skipped quietly.
         related: z.array(z.string().regex(kebab)).max(6).default([]),

@@ -112,7 +112,13 @@ leftover `[NEEDS SOURCE]`) are in `src/lib/guide.ts`. Start the body at
 (`/compare/`), the build adds the base path. A post with `draft: true` is
 left out of the build, `/guide/`, `sitemap.xml` and `llms.txt`.
 Published posts are added to the index, `sitemap.xml` and `llms.txt`
-automatically. English only: guide posts emit no hreflang, and the
+automatically. Optional `parent: <pillar-slug>` puts the post under that
+pillar in the breadcrumb and BreadcrumbList; `aboutPlace` adds a Place to
+BlogPosting.about. Tables that need a real `<caption>` are written as raw
+HTML inside `<div class="table-scroll" role="region" aria-labelledby="...">`
+(see any existing post); raw HTML is not touched by the Markdown plugin, so
+keep links out of those tables. External links get `rel` automatically.
+English only: guide posts emit no hreflang, and the
 header language switcher links only to English.
 
 ## Design system

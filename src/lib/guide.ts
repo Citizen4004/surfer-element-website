@@ -30,6 +30,10 @@ function validate(entries: GuideEntry[]) {
     if (e.data.slug !== e.id) {
       throw new Error(`${where}: frontmatter slug "${e.data.slug}" must equal the filename ("${e.id}").`);
     }
+    if (e.data.parent) {
+      if (e.data.parent === e.data.slug) throw new Error(`${where}: "parent" is the post itself.`);
+      if (!slugs.has(e.data.parent)) throw new Error(`${where}: parent slug "${e.data.parent}" does not match any guide post.`);
+    }
     for (const r of e.data.related) {
       if (r === e.data.slug) throw new Error(`${where}: "related" lists the post itself.`);
       if (!slugs.has(r)) throw new Error(`${where}: related slug "${r}" does not match any guide post.`);
