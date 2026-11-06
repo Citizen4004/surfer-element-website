@@ -252,3 +252,51 @@ button.btn-quiet { min-height: 44px; }
 @media (min-width: 900px) { .sticky-booking-bar { display: none; } }
 details.faq-item { border-bottom: 1px solid var(--color-border); padding-block: var(--space-4); }
 details.faq-item summary { min-height: 44px; display: list-item; padding-block: var(--space-1); font-family: var(--font-serif); font-weight: var(--weight-semibold); font-size: var(--text-h3); cursor: pointer; }
+
+/* ---------- Guide posts (src/pages/guide/[slug].astro) ---------- */
+.guide-post { max-width: 56rem; }
+.breadcrumb { font-size: var(--text-small); margin-bottom: var(--space-5); }
+.breadcrumb ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-2); color: var(--color-ink-2); }
+.breadcrumb li:not(:last-child)::after { content: "\203A"; margin-left: var(--space-2); color: var(--color-muted); }
+.breadcrumb a { display: inline-flex; align-items: center; min-height: 44px; }
+.breadcrumb [aria-current="page"] { overflow-wrap: anywhere; }
+.guide-header { max-width: var(--measure); margin-bottom: var(--space-6); }
+.guide-header h1 { font-size: var(--text-h1); line-height: var(--leading-heading); margin: 0 0 var(--space-4); }
+.guide-meta { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-4); margin: 0; font-size: var(--text-small); color: var(--color-ink-2); }
+.guide-meta span:first-child { font-weight: var(--weight-semibold); }
+.guide-hero { margin: 0 0 var(--space-6); }
+.guide-hero img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius-lg); }
+.guide-hero figcaption { margin-top: var(--space-2); font-size: var(--text-meta); color: var(--color-muted); }
+.guide-disclosure { max-width: var(--measure); margin-bottom: var(--space-6); }
+/* Text stays at the 40rem measure (DESIGN.md §4); tables may use the full
+   56rem article width so month/spot columns have room. */
+.guide-body > * { max-width: var(--measure); }
+.guide-body > .table-scroll { max-width: 100%; }
+.guide-body h2 { font-size: var(--text-h2); margin: var(--space-7) 0 var(--space-4); }
+.guide-body h3 { font-size: var(--text-h3); margin: var(--space-6) 0 var(--space-3); }
+.guide-body ul, .guide-body ol { padding-left: var(--space-5); }
+.guide-body li { margin-bottom: var(--space-2); }
+.guide-body img { max-width: 100%; height: auto; border-radius: var(--radius-md); }
+.guide-body blockquote { margin-inline: 0; padding-left: var(--space-4); border-left: 3px solid var(--color-border-strong); color: var(--color-ink-2); }
+.guide-body hr { border: 0; border-top: 1px solid var(--color-border); margin-block: var(--space-6); }
+.table-scroll { overflow-x: auto; margin-block: var(--space-5); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); }
+.table-scroll table { width: 100%; border-collapse: collapse; font-size: var(--text-small); }
+.table-scroll th, .table-scroll td { padding: var(--space-3); text-align: left; vertical-align: top; border-bottom: 1px solid var(--color-border); hyphens: auto; overflow-wrap: break-word; }
+.table-scroll thead th { background: var(--color-subtle); font-weight: var(--weight-semibold); }
+.table-scroll tbody th { font-weight: var(--weight-semibold); }
+.table-scroll tbody tr:nth-child(even) { background: var(--color-subtle); }
+.table-scroll tbody tr:last-child > * { border-bottom: 0; }
+.guide-section { max-width: var(--measure); margin-top: var(--space-8); }
+.guide-section > h2 { font-size: var(--text-h2); margin: 0 0 var(--space-4); }
+.guide-faq__item { border-top: 1px solid var(--color-border); padding-block: var(--space-4); }
+.guide-faq__item h3 { font-size: var(--text-h3); margin: 0 0 var(--space-2); }
+.guide-faq__item p { margin: 0; }
+.guide-list { list-style: none; margin: 0; padding: 0; }
+.guide-list li { border-top: 1px solid var(--color-border); padding-block: var(--space-4); }
+.guide-list h2, .guide-list h3 { font-size: var(--text-h3); margin: 0 0 var(--space-2); }
+.guide-list p { margin: 0 0 var(--space-2); }
+.guide-list__tag { font-size: var(--text-meta); font-weight: var(--weight-semibold); color: var(--color-ink-2); }
+.guide-list__meta { font-size: var(--text-meta); color: var(--color-muted); }
+.guide-list--index { margin-block: var(--space-6); }
+.guide-next { max-width: var(--measure); margin-top: var(--space-7); }
+.guide-body :is(h2, h3) { scroll-margin-top: calc(var(--space-9) - var(--space-3)); }

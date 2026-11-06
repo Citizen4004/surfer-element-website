@@ -101,6 +101,20 @@ the code:**
   exists and is accessible, but the true transposed-table view isn't built
   yet. Noted as a follow-up in `compare.astro`.
 
+## Guide posts (Tamraght guide)
+
+Posts are Markdown files in `src/content/guide/<slug>.md`, served at
+`/guide/<slug>/` by `src/pages/guide/[slug].astro`. The frontmatter schema
+(with comments on every field) is in `src/content.config.ts`; build-time
+checks (slug equals filename, related slugs exist, no stray `# ` H1, no
+leftover `[NEEDS SOURCE]`) are in `src/lib/guide.ts`. Start the body at
+`##`; the title is the H1. Link to other pages with plain root paths
+(`/compare/`), the build adds the base path. A post with `draft: true` is
+left out of the build, `/guide/`, `sitemap.xml` and `llms.txt`.
+Published posts are added to the index, `sitemap.xml` and `llms.txt`
+automatically. English only: guide posts emit no hreflang, and the
+header language switcher links only to English.
+
 ## Design system
 
 `src/styles/tokens.css` is a direct copy of the design tokens from the main

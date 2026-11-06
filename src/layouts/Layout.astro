@@ -17,8 +17,26 @@ interface Props {
    * aggregateRating here — Booking.com scores stay visible text only, per
    * entity-brief.md. */
   pageSchema?: Record<string, unknown>[];
+  /** og:type. Defaults to "website"; guide posts pass "article". */
+  ogType?: 'website' | 'article';
+  /** Overrides the sitewide social image (absolute URL). Guide posts pass
+   * their hero here when they have one. */
+  ogImage?: { url: string; alt: string; type?: string; width?: number; height?: number };
+  /** article:* Open Graph tags, only emitted when ogType is "article". */
+  article?: { publishedTime: string; modifiedTime: string; section?: string };
+  /** WebPage node dates (YYYY-MM-DD). Default to the launch date used by
+   * the core pages. */
+  datePublished?: string;
+  dateModified?: string;
+  /** Adds <meta name="robots" content="noindex">. Used for drafts shown in
+   * `astro dev` only; drafts are never built for production. */
+  noindex?: boolean;
 }
-const { title, description, navLabel, pageSchema } = Astro.props as Props;
+const {
+  title, description, navLabel, pageSchema,
+  ogType = 'website', ogImage: ogImageOverride, article,
+  datePublished = '2026-11-03', dateModified = '2026-11-03', noindex = false,
+} = Astro.props as Props;
 
 // Astro.url.pathname already includes `base` when one is configured, so
 // strip it back off here to get the "logical" app path — the lang-switch
@@ -83,14 +101,20 @@ const jsonLd = {
       description,
       isPartOf: { '@id': 'https://surferelement.com/#website' },
       inLanguage: 'en',
-      datePublished: '2026-11-03',
-      dateModified: '2026-11-03',
+      datePublished,
+      dateModified,
     },
     ...(pageSchema ?? []),
   ],
 };
 
-const ogImage = new URL(withBase('/og/og-image.png'), Astro.site).toString();
+const ogImage = ogImageOverride ?? {
+  url: new URL(withBase('/og/og-image.png'), Astro.site).toString(),
+  alt: 'Surfer Element — three surf houses in Tamraght, one way to book',
+  type: 'image/png',
+  width: 1200,
+  height: 630,
+};
 
 const nav = [
   { href: '/compare/', label: 'Compare' },
@@ -126,18 +150,27 @@ const locales = [
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:site_name" content="Surfer Element" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:locale" content="en_GB" />
-    <meta property="og:image" content={ogImage} />
-    <meta property="og:image:type" content="image/png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Surfer Element — three surf houses in Tamraght, one way to book" />
+    <meta property="og:image" content={ogImage.url} />
+    {ogImage.type && <meta property="og:image:type" content={ogImage.type} />}
+    {ogImage.width && <meta property="og:image:width" content={String(ogImage.width)} />}
+    {ogImage.height && <meta property="og:image:height" content={String(ogImage.height)} />}
+    <meta property="og:image:alt" content={ogImage.alt} />
+    {ogType === 'article' && article && (
+      <>
+        <meta property="article:published_time" content={article.publishedTime} />
+        <meta property="article:modified_time" content={article.modifiedTime} />
+        {article.section && <meta property="article:section" content={article.section} />}
+      </>
+    )}
+    {noindex && <meta name="robots" content="noindex" />}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image" content={ogImage.url} />
+    <meta name="twitter:image:alt" content={ogImage.alt} />
     <link rel="canonical" href={canonicalUrl} />
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>

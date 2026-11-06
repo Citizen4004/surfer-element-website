@@ -1,11 +1,30 @@
 ---
 import { withBase } from "../../lib/url";
 import Layout from '../../layouts/Layout.astro';
+import { formatCheckedDate } from '../../lib/format';
+import { getGuides, guidePath, isoDate, updatedOf } from '../../lib/guide';
+
+// Published (non-draft) posts only, pillar first, then most recently updated.
+const posts = await getGuides();
+
+const listSchema = posts.length
+  ? [{
+      '@type': 'ItemList',
+      '@id': new URL(withBase('/guide/'), Astro.site).toString() + '#posts',
+      itemListElement: posts.map((p, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: new URL(withBase(guidePath(p.data.slug)), Astro.site).toString(),
+        name: p.data.title,
+      })),
+    }]
+  : undefined;
 ---
 <Layout
   title="Tamraght Surf Guide | Surfer Element"
   description="Honest, dated guides to surfing Tamraght: the spots, the seasons, getting here from Agadir airport, and what to actually expect each month."
   navLabel="Tamraght guide"
+  pageSchema={listSchema}
 >
   <section class="container section prose">
     <h1>The Tamraght guide</h1>
@@ -14,14 +33,24 @@ import Layout from '../../layouts/Layout.astro';
       local knowledge lives outside the house comparisons, written by people
       who actually know this stretch of coast.</p>
 
-    <p class="pending">This section is empty at launch. No posts are listed
-      here yet — no placeholder titles or summaries are shown in their
-      place. Planned first posts (per keyword research, prioritized by real
-      search demand): a Tamraght village guide, getting from Agadir airport
-      to Tamraght, a month-by-month surf guide, a solo-traveller guide, and
-      a first-week-learning-to-surf guide.</p>
+    {posts.length > 0 ? (
+      <ul class="guide-list guide-list--index">
+        {posts.map((p) => (
+          <li>
+            {p.data.pillar && <p class="guide-list__tag">Main guide</p>}
+            <h2><a href={withBase(guidePath(p.data.slug))}>{p.data.title}</a></h2>
+            <p>{p.data.description}</p>
+            <p class="guide-list__meta">Updated <time datetime={isoDate(updatedOf(p))}>{formatCheckedDate(isoDate(updatedOf(p)))}</time></p>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="pending">No guides are published yet. Nothing is listed here
+        until a real, dated guide is live: no placeholder titles or
+        summaries.</p>
+    )}
 
-    <p>In the meantime: <a href={withBase("/compare/")}>Compare the three houses &rarr;</a>
+    <p>{posts.length > 0 ? "Also:" : "In the meantime:"} <a href={withBase("/compare/")}>Compare the three houses &rarr;</a>
       &middot; <a href={withBase("/fit-check/")}>Take the fit check &rarr;</a>
       &middot; <a href={withBase("/faq/")}>Read the FAQ &rarr;</a></p>
   </section>

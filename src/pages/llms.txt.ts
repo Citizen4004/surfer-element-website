@@ -1,8 +1,14 @@
 import type { APIRoute } from 'astro';
 import { withBase } from '../lib/url';
+import { getGuides, guidePath } from '../lib/guide';
 
-export const GET: APIRoute = ({ site }) => {
+export const GET: APIRoute = async ({ site }) => {
   const u = (p: string) => new URL(withBase(p), site).toString();
+  // Published guide posts only (pillar first), generated at build time.
+  const posts = await getGuides();
+  const guideSection = posts.length
+    ? `## Guides\n\n${posts.map((p) => `- [${p.data.title}](${u(guidePath(p.data.slug))}): ${p.data.description}`).join('\n')}\n\n`
+    : '';
   const body = `# Surfer Element
 
 > Surfer Element is a booking service in Tamraght, Morocco, representing
@@ -29,7 +35,7 @@ surf camp. All comparisons on this site are between these three houses only.
 - [Contact](${u('/contact/')})
 - [Tamraght guide](${u('/guide/')}): seasonal and logistics content (spots, months, getting to Tamraght)
 
-This file is updated as new guide content is published.
+${guideSection}This file is generated at build time, so published guide posts are listed automatically.
 `;
   return new Response(body, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
 };

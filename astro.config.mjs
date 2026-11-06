@@ -1,5 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import { satteri } from '@astrojs/markdown-satteri';
+import { guideMarkdownPlugin } from './src/lib/guide-markdown-plugin.mjs';
 
 // This site is deployed two ways from the same codebase, and Astro needs to
 // know which one at build time:
@@ -17,6 +19,15 @@ const usingCustomDomain = process.env.USE_CUSTOM_DOMAIN === 'true';
 export default defineConfig({
   site: usingCustomDomain ? 'https://surferelement.com' : 'https://citizen4004.github.io',
   base: usingCustomDomain ? '/' : '/surfer-element-website',
+  // Guide posts are Markdown: this prefixes their root-relative links with
+  // `base` and wraps tables for horizontal scroll (src/lib/guide-markdown-plugin.mjs).
+  // Astro 7's default processor is Sätteri; satteri() keeps the defaults
+  // (GFM, smart punctuation, syntax highlighting) and adds the plugin.
+  markdown: {
+    processor: satteri({
+      hastPlugins: [guideMarkdownPlugin({ base: usingCustomDomain ? '' : '/surfer-element-website' })],
+    }),
+  },
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'de', 'fr', 'es', 'it', 'nl'],

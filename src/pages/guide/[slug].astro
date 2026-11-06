@@ -1,0 +1,188 @@
+---
+// Tamraght guide post template. One page per Markdown file in
+// src/content/guide/ (schema: src/content.config.ts). English only:
+// deliberately emits NO hreflang alternates, and the header language switcher
+// (Layout.astro) already links only to English, so no guide URL ever points
+// at an untranslated locale. Add alternates here only when a translated post
+// with the same translationKey actually exists.
+import { render } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+import DisclosureNote from '../../components/DisclosureNote.astro';
+import { withBase } from '../../lib/url';
+import { formatCheckedDate } from '../../lib/format';
+import { getGuides, guidePath, isoDate, updatedOf, needsDisclosure, type GuideEntry } from '../../lib/guide';
+
+export async function getStaticPaths() {
+  // Drafts render only under `astro dev` (noindex banner); the production
+  // build, sitemap, index and llms.txt never include them.
+  const entries = await getGuides({ includeDrafts: import.meta.env.DEV });
+  return entries.map((entry) => ({ params: { slug: entry.data.slug }, props: { entry } }));
+}
+
+const { entry } = Astro.props as { entry: GuideEntry };
+const d = entry.data;
+const { Content } = await render(entry);
+
+const published = await getGuides();
+const related = d.related
+  .map((slug) => published.find((p) => p.data.slug === slug))
+  .filter((p): p is GuideEntry => Boolean(p));
+
+const pathname = guidePath(d.slug);
+const canonical = new URL(withBase(pathname), Astro.site).toString();
+const siteOrigin = new URL(withBase('/'), Astro.site).toString();
+
+const publishedIso = isoDate(d.published);
+const updatedIso = isoDate(updatedOf(entry));
+const checkedIso = isoDate(d.factsCheckedOn);
+const showPublished = publishedIso !== updatedIso;
+
+// Social/schema image: the hero (cropped to 1200x630) when there is one,
+// otherwise Layout's sitewide og-image.
+let ogImage: { url: string; alt: string; type: string; width: number; height: number } | undefined;
+if (d.heroImage) {
+  const og = await getImage({ src: d.heroImage.src, width: 1200, height: 630, format: 'jpg' });
+  ogImage = {
+    url: new URL(og.src, Astro.site).toString(),
+    alt: d.heroImage.alt,
+    type: 'image/jpeg',
+    width: 1200,
+    height: 630,
+  };
+}
+const schemaImage = ogImage?.url ?? new URL(withBase('/og/og-image.png'), Astro.site).toString();
+
+// Same entity the whole site references (Layout.astro): the Organization
+// @id is the publisher AND the author. The byline is the agency, never a
+// person. No aggregateRating or Review anywhere.
+const orgRef = { '@id': 'https://surferelement.com/#organization' };
+
+const pageSchema: Record<string, unknown>[] = [
+  {
+    '@type': 'BlogPosting',
+    '@id': `${canonical}#article`,
+    headline: d.title,
+    description: d.description,
+    url: canonical,
+    mainEntityOfPage: { '@id': `${canonical}#webpage` },
+    isPartOf: { '@id': 'https://surferelement.com/#website' },
+    inLanguage: 'en',
+    datePublished: publishedIso,
+    dateModified: updatedIso,
+    image: [schemaImage],
+    author: orgRef,
+    publisher: orgRef,
+  },
+  {
+    '@type': 'BreadcrumbList',
+    '@id': `${canonical}#breadcrumb`,
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: siteOrigin },
+      { '@type': 'ListItem', position: 2, name: 'Guide', item: new URL(withBase('/guide/'), Astro.site).toString() },
+      { '@type': 'ListItem', position: 3, name: d.title, item: canonical },
+    ],
+  },
+];
+if (d.faq.length > 0) {
+  pageSchema.push({
+    '@type': 'FAQPage',
+    '@id': `${canonical}#faqpage`,
+    isPartOf: { '@id': `${canonical}#webpage` },
+    mainEntity: d.faq.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: { '@type': 'Answer', text: item.answer },
+    })),
+  });
+}
+---
+<Layout
+  title={d.seoTitle}
+  description={d.description}
+  navLabel="Tamraght guide"
+  pageSchema={pageSchema}
+  ogType="article"
+  ogImage={ogImage}
+  article={{ publishedTime: publishedIso, modifiedTime: updatedIso, section: 'Tamraght guide' }}
+  datePublished={publishedIso}
+  dateModified={updatedIso}
+  noindex={d.draft}
+>
+  <article class="container section guide-post">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href={withBase('/')}>Home</a></li>
+        <li><a href={withBase('/guide/')}>Guide</a></li>
+        <li aria-current="page">{d.title}</li>
+      </ol>
+    </nav>
+
+    {d.draft && (
+      <p class="pending">Draft preview. This post is excluded from the production build, the guide index, sitemap.xml and llms.txt.</p>
+    )}
+
+    <header class="guide-header">
+      <h1>{d.title}</h1>
+      <p class="guide-meta">
+        <span>By {d.author}</span>
+        {showPublished && <span>Published <time datetime={publishedIso}>{formatCheckedDate(publishedIso)}</time></span>}
+        <span>Updated <time datetime={updatedIso}>{formatCheckedDate(updatedIso)}</time></span>
+        <span>Facts checked on <time datetime={checkedIso}>{formatCheckedDate(checkedIso)}</time></span>
+      </p>
+    </header>
+
+    {d.heroImage && (
+      <figure class="guide-hero">
+        <Image
+          src={d.heroImage.src}
+          alt={d.heroImage.alt}
+          width={1120}
+          height={630}
+          widths={[560, 800, 1120]}
+          sizes="(min-width: 900px) 56rem, 100vw"
+          loading="eager"
+        />
+        {d.heroImage.illustrative && <figcaption>Illustration, not a photograph.</figcaption>}
+      </figure>
+    )}
+
+    {needsDisclosure(entry) && <div class="guide-disclosure"><DisclosureNote /></div>}
+
+    <div class="guide-body">
+      <Content />
+    </div>
+
+    {d.faq.length > 0 && (
+      <section class="guide-section" aria-labelledby="guide-quick-answers">
+        <h2 id="guide-quick-answers">Quick answers</h2>
+        {d.faq.map((item) => (
+          <div class="guide-faq__item">
+            <h3>{item.question}</h3>
+            <p>{item.answer}</p>
+          </div>
+        ))}
+      </section>
+    )}
+
+    {related.length > 0 && (
+      <section class="guide-section" aria-labelledby="guide-related">
+        <h2 id="guide-related">Related guides</h2>
+        <ul class="guide-list">
+          {related.map((r) => (
+            <li>
+              <h3><a href={withBase(guidePath(r.data.slug))}>{r.data.title}</a></h3>
+              <p>{r.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <p class="guide-next">
+      <a href={withBase('/compare/')}>Compare the three houses &rarr;</a>
+      &middot; <a href={withBase('/fit-check/')}>Take the fit check &rarr;</a>
+      &middot; <a href={withBase('/guide/')}>All guides &rarr;</a>
+    </p>
+  </article>
+</Layout>
